@@ -16,7 +16,7 @@ var appHead= 37; //px
 var collapsed= 1;
 var appPanelBackground= getCookie("app_panel_background")? getCookie("app_panel_background"): "248 , 199 , 0 , 1";
 var uName= "Anonymous";
-var url= location.href;
+var webPage= location.href; // -hash -search
 
 //--------------------------------o-n---r-e-a-d-y------------------------------(
 
@@ -366,7 +366,7 @@ function postComment(addressee, msg) {
 		 dataType: "json",
 		 method: "post",
 		 data: {
-			 webPage: url,
+			 webPage: webPage,
 			 author: uName,
 			 userComment: userComment
 		 },

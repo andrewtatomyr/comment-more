@@ -40,7 +40,8 @@ app.get('/', function (req, res) { //index
 
 
 app.post('/AJAX/post-comment', function(req,res) { //AJAX post comments
-
+	res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
 	var dateTime= getTime();
 
@@ -59,6 +60,9 @@ app.post('/AJAX/post-comment', function(req,res) { //AJAX post comments
 
 
 app.post('/AJAX/get-comments', function(req,res) { //AJAX get comment
+
+
+
 
 
 	res.json({     uName });
