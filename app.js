@@ -21,6 +21,8 @@ var fs= require('fs');
 
 var MongoClient = require('mongodb').MongoClient;
 var mongoUrl= "mongodb://CommentMore:12345678@waffle.modulusmongo.net:27017/davAd9yn";
+
+//var methodOverride= require("method-override");
 //------------------------------------------------------------------------------
 
 
@@ -30,11 +32,55 @@ app.get('/', function (req, res) { //index
 	res.render('index.jade');
 
 
-	var uName = url.parse(req.url, true).query.uName || "Anonymous";
-	console.log("start refresh | uName: ", uName);//x
+	//var uName = url.parse(req.url, true).query.uName || "Anonymous";
+	//console.log("start refresh | uName: ", uName);//x
 });
 
 
+
+
+app.post('/AJAX/get-comments', function(req,res) { //AJAX get comment
+	res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+	//var answer= [];
+	var lastDateTime= parseInt(req.body.lastDateTime);
+	var webPage= req.body.webPage;
+	if (webPage.indexOf("?")>-1) webPage= webPage.slice(0,webPage.indexOf("?"));
+	if (webPage.indexOf("#")>-1) webPage= webPage.slice(0,webPage.indexOf("#"));
+	var regWebPage= new RegExp(webPage, "");
+
+	console.log(webPage, lastDateTime);//x
+
+
+	MongoClient.connect(mongoUrl, function(err,db) {
+		if(err) throw err;
+
+
+
+		var collection = db.collection('comments');
+
+		collection.find({ dateTime: {$gt:lastDateTime} , webPage: regWebPage }).toArray(function(err, results) { //{ lastDateTime: {$gt:req.body.lastDateTime} }
+			if(err) throw err;
+
+			//console.log(results);//x
+			// Let's close the db
+			db.close();
+
+			answer= results;
+			res.json({ answer });
+			//console.log(answer);
+		});
+
+
+	});
+	//console.log(answer);
+
+	//res.json({ answer });
+
+
+
+});
 
 
 
@@ -43,33 +89,42 @@ app.post('/AJAX/post-comment', function(req,res) { //AJAX post comments
 	res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
-	var dateTime= getTime();
 
-	var db= connect(mongoUrl);
-	db.comments.insert({
-		webPage: req.webPage,
-		author: req.author,
-		userComment: req.userComment,
-		dateTime: dateTime
-	});
+	var dateTime= new Date().getTime();
+	console.log(dateTime,req.body.webPage);//x
+	var answer= "---";
 
-	res.json({ dateTime });
+	if (req.body.userComment) {
+
+		MongoClient.connect(mongoUrl, function(err,db) {
+			if(err) throw err;
+
+			var collection = db.collection('comments');
+			collection.insert({
+				webPage: req.body.webPage,
+				author: req.body.author,
+				userComment: req.body.userComment,
+				dateTime: dateTime
+			}, function(err,docs) {
+				collection.find().toArray(function(err, results) {
+	        console.dir(results);
+	        // Let's close the db
+	        db.close();
+	      });
+			});
+
+		});
+
+		answer= "ok";
+	}
+
+
+
+
+	res.json({ answer });
 });
 
 
-
-
-app.post('/AJAX/get-comments', function(req,res) { //AJAX get comment
-
-
-
-
-
-	res.json({     uName });
-
-
-
-});
 
 
 

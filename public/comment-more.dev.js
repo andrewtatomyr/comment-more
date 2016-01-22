@@ -14,15 +14,16 @@ var cookiesExpires= 3600*24*365;
 var resMaxHeight= Math.round( document.documentElement.clientHeight*0.6 )+"px";
 var appHead= 37; //px
 var collapsed= 1;
-var appPanelBackground= getCookie("app_panel_background")? getCookie("app_panel_background"): "248 , 199 , 0 , 1";
+var appPanelBackground= getCookie("app_panel_background") || "248 , 199 , 0 , 0.9";
 var uName= "Anonymous";
 var webPage= location.href; // -hash -search
+var lastDateTime= 0;
 
 //--------------------------------o-n---r-e-a-d-y------------------------------(
 
 
 (function() {
-	commentMore();
+	if (window.top === window.self)	commentMore(); //захист від запусків у фреймах!
 })();
 
 
@@ -34,12 +35,16 @@ function commentMore() {
 
 	setInterval(function() {
 
-		getComments(url);
+		if (!collapsed) getComments();
 
-	}, 3000);
+	}, 5000);
 
 	setTimeout(function() {
 		setAppPanel();
+
+		//getComments(webPage);//x
+
+
 	}, 2000);
 
 
@@ -82,6 +87,9 @@ function setAppPanel() {
 	//appPanel.style.bottom= "-100px";//замінено нижче
 	appPanel.style.left= "50px";
 
+	appPanel.style.font= "12px Franklin Gothic Medium, Arial , Gabriola, Impact";
+	//appPanel.style.fontSize: "12px";
+
 	appPanel.innerHTML= str(
 		"<div id='cm-app-head' style='text-align:right;' >",
 			"<div style='float:left;' ><button id='cm-toggle-button' ></button></div> ",
@@ -89,28 +97,32 @@ function setAppPanel() {
 			"<a href='http://comment-more.herokuapp.com/' title='Project site' target=blank style='text-decoration:underline; color:grey; ' >CommentMore v.",
 			JMVersion,
 			"</a> ",
-			"<button id='cm-options-button' title='налаштування' > ≡ </button> ", //≡
+			"<button id='cm-options-button' title='Options' > ≡ </button>", //≡
 			" <span id='cm-version-status' style='color:black;'  ></span>",
 		"</div>",
 		//comments:
-
-		"<div id='cm-comments-area' style='margin-top:10px; max-height:"+resMaxHeight+"; overflow:auto; ' ></div>", //c
-		/* *
-		//upload more:
-		+"<div><b>Завантажити зображення</b></div>" //um
-		+"<div>"
-			+"<span style='float:left; overflow:hidden; font-family:inherit; font-size:inherit; line-height:inherit; padding:0px;' ><input style='width:200px; overflow:hidden; font-family:inherit; font-size:smaller; line-height:inherit; padding:0px;' type='file' id='file-to-upload' accept='.txt,image/*' ></span>"
-			+" <button id='upload-button' >завантажити</button>"
-			//+"<span id='upload-status' ></span>"
-		+"</div>" //um
-		//+"<div><input id='uploaded-file-link' ></div>" //um
-		// */
-		//find more:
-		//+"<div><b>Your comment</b></div>"
-		"<input id='cm-user-comment' placeholder='Your comment' style='width:100%; margin-bottom:10px; ' > ",
-		"<button id='cm-post-comment' style='width:100%; ' >Post comment as ",uName,"</button> "
+		"<div id='cm-enhanced-area' style='display:none; ' >",
+			"<div id='cm-comments-area' style='margin-top:10px; margin-bottom:10px; max-height:"+resMaxHeight+"; overflow:auto; ' ></div>", //c
+			/* *
+			//upload more:
+			+"<div><b>Завантажити зображення</b></div>" //um
+			+"<div>"
+				+"<span style='float:left; overflow:hidden; font-family:inherit; font-size:inherit; line-height:inherit; padding:0px;' ><input style='width:200px; overflow:hidden; font-family:inherit; font-size:smaller; line-height:inherit; padding:0px;' type='file' id='file-to-upload' accept='.txt,image/*' ></span>"
+				+" <button id='upload-button' >завантажити</button>"
+				//+"<span id='upload-status' ></span>"
+			+"</div>" //um
+			//+"<div><input id='uploaded-file-link' ></div>" //um
+			// */
+			//find more:
+			//+"<div><b>Your comment</b></div>"
+			"<input id='cm-user-comment' placeholder='Your comment' style='width:100%; margin-bottom:0px; ' > ",
+			"<button id='cm-post-comment' style='width:100%; ' >Post comment as ",uName,"</button> ",
+		"</div>"
 	);
 	document.body.appendChild(appPanel);
+
+	//getComments(webPage);//?
+
 	echo("panel created");
 
 	$("#cm-toggle-button").click(toggleAppPanel); //^v
@@ -121,11 +133,10 @@ function setAppPanel() {
 
 	echo("panel height",$('#cm-app-panel').css('height'));
 	appPanel.style.bottom= str( -parseInt($('#cm-app-panel').css('height')) , "px" );
-
 	//appHead= parseInt($('#app-head').css('height')) + parseInt($('#app-panel').css('padding')) ;
 	echo("app head", appHead);
 	echo("app panel height",parseInt($('#cm-app-panel').css('height')));
-	var waterLine= str( appHead-parseInt($('#cm-app-panel').css('height')) , "px" );
+	var waterLine= 0;//str( parseInt(document.documentElement.clientHeight)-appHead , "px" );//str( appHead-parseInt($('#cm-app-panel').css('height')) , "px" );
 	echo("water line",waterLine);
 
 
@@ -140,20 +151,25 @@ function setAppPanel() {
 
 
 function toggleAppPanel() {
+
+	//getComments(webPage);
+
+
 	var waterLine= str( appHead-parseInt($('#cm-app-panel').css('height')) , "px" );
 	echo("water line",waterLine);
 
 	if (collapsed) {
-		$("#cm-app-panel").animate({bottom: "0px"}, 500);
+		$("div#cm-enhanced-area").css({"display": "block"});
+		//$("#cm-app-panel").animate({bottom: "0px"}, 500);
 		$("#cm-toggle-button").text("v");
 		collapsed= false;
 	} else {
-		$("#cm-app-panel").animate({bottom: waterLine}, 500); //!
+		$("div#cm-enhanced-area").css({"display": "none"});
+		//$("#cm-app-panel").animate({bottom: waterLine}, 500); //!
 		$("#cm-toggle-button").text("^");
 		collapsed= 1;
 	}
 }
-
 
 
 function showOptions() {
@@ -285,58 +301,49 @@ function hideOptions() {
 function getComments() {
 	echo("[get comments]");//dm
 
-	$("#app-status").text(" ⌛ "); //⌛
+	$("#cm-app-status").text(" ⌛ "); //⌛
 
 
-	clearAppPanel(); //f
+	//clearAppPanel(); //f
 
-	var msgArea= document.getElementById("private-msg");//$("div#results-area");//$("#private-msg");
-	msgArea.innerHTML= "";
+	var commentArea= document.getElementById("cm-comments-area");//$("div#results-area");//$("#private-msg");
+	//?//commentArea.innerHTML= "";
 
 	$.ajax({
-     url: "http://nobuna.pp.ua/AJAX-get-msg.php",
+     url: "http://localhost:3000/AJAX/get-comments",
 		 dataType: "json",
 		 method: "post",
 		 data: {
-			 addressee: detectUser(),
-			 //author: userName,
-			 //msg: msg,
-			 key: getCookie("private_more_key")
+			 webPage: webPage,
+			 lastDateTime: lastDateTime
 		 },
      success: function(res) {
-	     echo("Success");//dm
-			 $("#received-button").text("отримані"); //⌛
-			 $("#app-status").text(" "); //⌛
+	     echo("Success get",res.answer);//dm
+			 console.log(res);//x
 
-			 for (key in res) {
+			 $("#cm-app-status").text(" "); //⌛
+
+			 for (key in res.answer) { //res.answer?
 					var tab= document.createElement('div');
 					tab.style.background= "white";
 					tab.style.padding= "3px";
 					tab.style.marginBottom= "10px";
-					var current= res[key];
-					if (current.new==1) {
-						tab.innerHTML= "<b>"+current.author+"</b>: <br><span style='color:red;' >"+current.msg+"</span> ";
-					} else {
-						tab.innerHTML= "<span style='color:grey;' ><b>"+current.author+"</b>: <br>"+current.msg+"</span> ";
-					}
-					//if (res[key]!==detectUser()) {
-					//tab.innerHTML= tab.innerHTML+" <button onclick=\"function() { setMsg(\'"+res[key].author+"\'); }\">reply</button>";
-					//}
-					tab.title= str(current.date_time," GMT");
-					//tab.onclick= function() { setMsg(this.title); }
-					//tab.style.cursor= "pointer";
+					var current= res.answer[key];
+					tab.innerHTML= "<span style='color:grey;' ><b>"+current.author+"</b>: <br>"+current.userComment+"</span> ";
+					tab.title= str(Date(current.dateTime)," GMT");
 
+					commentArea.appendChild(tab);
 
-					msgArea.appendChild(tab);
+					if (current.dateTime>lastDateTime) lastDateTime= current.dateTime;
+					echo("last date time",lastDateTime);
 
-
-
+					/*
 					var reply= document.createElement('button');
 					reply.title= current.author;
 					reply.innerHTML= "відповісти";
 					reply.onclick= function() { setMsg(this.title); }
 					tab.appendChild(reply);
-
+					*/
 
 			 }
 
@@ -345,47 +352,51 @@ function getComments() {
 
      },
      error: function() {
-       echo("Error");//dm
-			 $("#app-status").text(" помилка: [GP] "); //⌛
+       echo("Error get comment", res.answer);//dm
+			 $("#cm-app-status").text(" error: [gc] "); //⌛
      }
 	});
 
 }
 
 
-function postComment(addressee, msg) {
-	echo("[post private]");//dm
-	$("#app-status").text(" ⌛ "); //⌛
+function postComment() {
+	echo("[post comment]");//dm
+	$("#cm-app-status").text(" ⌛ "); //⌛
 
 
 
-	var userComment= $("#cm-user-comment").text();
+	var userComment= $("#cm-user-comment").val();
+	if (userComment) {
+		$("#cm-user-comment").val("");
 
-	$.ajax({
-     url: "https://comment-more.herokuapp.com/AJAX/post-comment",
-		 dataType: "json",
-		 method: "post",
-		 data: {
-			 webPage: webPage,
-			 author: uName,
-			 userComment: userComment
-		 },
-     success: function(res) {
-				echo("post: Success");//dm
+		$.ajax({
+	     url: "http://localhost:3000/AJAX/post-comment", // "https://comment-more.herokuapp.com/AJAX/post-comment",
+			 dataType: "json",
+			 method: "post",
+			 data: {
+				 "webPage": webPage,
+				 "author": uName,
+				 "userComment": userComment
+			 },
+	     success: function(res) {
+					echo("post: Success",res.answer);//dm
 
-				$("#app-status").text(" "); //⌛
-
-
-     },
-     error: function() {
-			 echo("Error");//dm
-			 $("#app-status").text(" error: [pc] "); //⌛
+					$("#cm-app-status").text(" "); //⌛
 
 
-			 playSound("http://wav-library.net/effect/windows/xp/windows_xp_-_kriticheskaya_oshibka.mp3");//sm //"http://nobuna.pp.ua/dload/windows_xp_-_kriticheskaya_oshibka.mp3"
+	     },
+	     error: function() {
+				 echo("Error post",res.answer);//dm
+				 $("#cm-app-status").text(" error "); //⌛
 
-     }
-	});
+
+				 playSound("http://wav-library.net/effect/windows/xp/windows_xp_-_kriticheskaya_oshibka.mp3");//sm //"http://nobuna.pp.ua/dload/windows_xp_-_kriticheskaya_oshibka.mp3"
+
+	     }
+		});
+	}
+
 
 }
 
@@ -394,7 +405,7 @@ function postComment(addressee, msg) {
 
 var mostBanned= [];
 function verifyStatus() {
-	$("#app-status").text(" ⌛ "); //⌛
+	$("#cm-app-status").text(" ⌛ "); //⌛
 
 	{ //update status
 		//nop
@@ -420,14 +431,14 @@ function verifyStatus() {
 				 /* moved from getNewCount() */
 				 if (JMVersion==res.version) {//⌛
 					 echo("[version ok]");//dm
-					 //$("#version-status").text("");
+					 //$("#cm-version-status").text("");
 				 } else {
 					 echo("[app version:"+JMVersion+"][latest version:"+res.version+"]");//dm
-					 $("#version-status").text("доступна нова версія!");
+					 $("#cm-version-status").text("доступна нова версія!");
 
 					 var JMChangelog= res.changelog.replace(/; /g, "\n");//dm
 					 echo("changelog", JMChangelog);//dm
-					 $("#version-status").attr("title", JMChangelog);//dm
+					 $("#cm-version-status").attr("title", JMChangelog);//dm
 				 }
 				 // */
 
@@ -447,11 +458,11 @@ function verifyStatus() {
 				 }
 
 				 echo("Success","most banned:",mostBanned);//dm
-				 $("#app-status").text(" "); //⌛
+				 $("#cm-app-status").text(" "); //⌛
 	     },
 	     error: function() {
 	       echo("Error");//dm
-				 $("#app-status").text(" помилка: [US] "); //⌛
+				 $("#cm-app-status").text(" помилка: [US] "); //⌛
 
 	     }
 		});
@@ -480,7 +491,7 @@ function verifyStatus() {
 
 function searchQuery(appPanel) {
 
-	//$("#app-status").text(" ⌛ "); //⌛
+	//$("#cm-app-status").text(" ⌛ "); //⌛
 
 	var search= $("#search-string").val();
 	echo("[search: "+search+"]");//dm
@@ -529,7 +540,7 @@ function searchQuery(appPanel) {
 	var maxPage= $("#search-depth").val();
 	/*var*/ resultsAmount= 0; //без var - глобальна змінна
 	for (var p= 1; p<=maxPage; p++) {
-		//$("#app-status").text(" ⌛ "); //⌛
+		//$("#cm-app-status").text(" ⌛ "); //⌛
 		echo( window.location.hostname+"/forum/bunker?page="+p );//dm
 		findMore( search , "http://"+window.location.hostname+"/forum/bunker?page="+p , p , resultsArea ); //http://www.footboom.com
 		//if (p>=99) $("#search-button").show();//?
@@ -605,7 +616,7 @@ function findMore(search,url,p,resultsArea) {
 		}
 		*/
 
-		//$("#app-status").text(" "); //⌛
+		//$("#cm-app-status").text(" "); //⌛
 	});
 }
 
@@ -731,7 +742,7 @@ function uploadImg() {
 
 
 		echo("[upload image]");//dm
-		$("#app-status").text(" ⌛ "); //⌛
+		$("#cm-app-status").text(" ⌛ "); //⌛
 		$("#upload-button").text(" ⌛ "); //⌛
 
 
@@ -772,7 +783,7 @@ function uploadImg() {
 
 
 
-					$("#app-status").text(" "); //⌛
+					$("#cm-app-status").text(" "); //⌛
 					//$("#uploaded-file-link").text(res.link); //⌛
 					$("#upload-button").text("завантажити"); //⌛
 
@@ -781,7 +792,7 @@ function uploadImg() {
 	     },
 	     error: function() {
 				 echo("UM Error",res.link);//dm
-				 $("#app-status").text(" помилка: [UM] "); //⌛
+				 $("#cm-app-status").text(" помилка: [UM] "); //⌛
 				 //$("#upload-status").text("помилка "); //⌛
 				 alert("Не вдалося завантажити зображення");
 				 $("#upload-button").text("завантажити"); //⌛
