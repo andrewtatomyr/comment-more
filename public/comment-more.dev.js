@@ -16,9 +16,10 @@ var appHead= 37; //px
 var collapsed= 1;
 var appPanelBackground= getCookie("app_panel_background")? getCookie("app_panel_background"): "248 , 199 , 0 , 1";
 var uName= "Anonymous";
-
+var url= location.href;
 
 //--------------------------------o-n---r-e-a-d-y------------------------------(
+
 
 (function() {
 	commentMore();
@@ -33,19 +34,7 @@ function commentMore() {
 
 	setInterval(function() {
 
-		var feedback= document.getElementsByClassName("feedback-panel");
-		if (feedback.length===0) {
-			setFull();
-			ignoreFull();
-
-
-
-			if ( !getCookie("do_not_show_images") ) viewMore(); // Chester! DELETE THIS ROW
-
-
-			scrollToLastComment(); //якщо ми тут, то логічно припустити, що був доданий комент аяксом (або ми не в темі, але тоді спрацює внутрішній захист ф-ції)
-
-		}
+		getComments(url);
 
 	}, 3000);
 
@@ -53,6 +42,9 @@ function commentMore() {
 		setAppPanel();
 	}, 2000);
 
+
+
+	/*
 	setTimeout(function() { //pp
 		getNewCount();
 	}, 3000);
@@ -62,7 +54,7 @@ function commentMore() {
 	setTimeout(function() {
 		setPrivateKey(); //pp
 	}, 5000);
-
+	*/
 
 }
 
@@ -118,8 +110,8 @@ function setAppPanel() {
 		"<input id='cm-user-comment' placeholder='Your comment' style='width:100%; margin-bottom:10px; ' > ",
 		"<button id='cm-post-comment' style='width:100%; ' >Post comment as ",uName,"</button> "
 	);
-
 	document.body.appendChild(appPanel);
+	echo("panel created");
 
 	$("#cm-toggle-button").click(toggleAppPanel); //^v
 	$("#cm-options-button").click(showOptions); //≡
@@ -128,12 +120,12 @@ function setAppPanel() {
 
 
 	echo("panel height",$('#cm-app-panel').css('height'));
-	appPanel.style.bottom= str( -parseInt($('#cm-app-panel').css('height')) , "px" ); 
+	appPanel.style.bottom= str( -parseInt($('#cm-app-panel').css('height')) , "px" );
 
 	//appHead= parseInt($('#app-head').css('height')) + parseInt($('#app-panel').css('padding')) ;
 	echo("app head", appHead);
-
-	var waterLine= str( appHead-parseInt($('#app-panel').css('height')) , "px" );
+	echo("app panel height",parseInt($('#cm-app-panel').css('height')));
+	var waterLine= str( appHead-parseInt($('#cm-app-panel').css('height')) , "px" );
 	echo("water line",waterLine);
 
 
@@ -164,6 +156,120 @@ function toggleAppPanel() {
 
 
 
+function showOptions() {
+	echo("[options panel]");//dm
+	$("#options-button").hide(); //Ξ
+
+	var optionsPanel= document.createElement("div");
+	optionsPanel.id= "options-panel";
+
+	optionsPanel.style.width= "300px";
+	//optionsPanel.style.maxHeight= "500px";
+	optionsPanel.style.border= "1px solid #DFDFDF";
+	optionsPanel.style.borderRadius= "0px 0px 10px 10px  ";
+	optionsPanel.style.background= "rgba( "+appPanelBackground+" )"; //"lightblue";
+	optionsPanel.style.margin= "0px";
+	optionsPanel.style.padding= "10px";
+	//optionsPanel.style.padding= "10px";
+
+	optionsPanel.style.position= "fixed";
+	optionsPanel.style.zIndex= "1010";
+
+	/*
+	optionsPanel.style.top= "100px";
+	optionsPanel.style.left= str(Math.round((document.documentElement.clientWidth-300)/2),"px");
+	*/
+	optionsPanel.style.left= "50px";
+
+	/*
+	optionsPanel.padding= "20px";
+	optionsPanel.background= "rgba(100,100,100,0.2)";
+	optionsPanel.position= "fixed";
+	optionsPanel.top= 0;
+	optionsPanel.left= 0;
+	optionsPanel.right= 0;
+	optionsPanel.bottom= 0;
+	optionsPanel.textAlign= "center";
+	*/
+
+	var doNotShowImages= getCookie("do_not_show_images")? "": "checked";
+	//var doNotHideAds= getCookie("do_not_hide_ads")? "": "checked";
+	var hideAds= getCookie("hide_ads")? "checked": "";//ads
+	var hideTopics= getCookie("hide_topics")? "checked": "";//?
+	var mute= getCookie("mute")? "checked": "";//?
+	var devMode= getCookie("dev_mode")? "checked": "";//dm
+	var appStartCollapsed= getCookie("app_start_collapsed")? "checked": "";//dm
+
+
+	for (var i= 0, tmp= ""; i<mostBanned.length; i++) {
+		tmp+= str(i+1,") ",mostBanned[i],"<br>")
+	}
+	optionsPanel.innerHTML= str(
+		"<div style='cursor:default;' ><b>Рейтинг ,,Народне визнання''  </b></div>",
+		"<div style='cursor:default;' >",tmp,"</div><hr>",
+		"<div  style='cursor:default;'  ><b>Налаштування </b></div> ",
+		"<input id=show_images type=checkbox ",doNotShowImages," ><span  style='cursor:default;' > Показувати зображення і відео</span><br>",
+		//"<input id=hide_ads type=checkbox ",doNotHideAds," ><span style='cursor:default;' > Приховувати рекламу</span><br>",
+		"<input id=hide_ads type=checkbox ",hideAds," ><span style='cursor:default;' > Приховувати рекламу (не вмикайте на Mozilla)</span><br>",//ads
+		"<input id=hide_topics type=checkbox ",hideTopics," ><span style='cursor:default;' > Приховувати назви тем і ніки</span><br>", //
+		"<input id=mute type=checkbox ",mute," ><span style='cursor:default;' > Беззвучний режим</span><br>", //
+		"<span style='cursor:default;' >Звуковий файл: </span><input id=new_msg_sound value='"+newMsgSound+"' style='width:100px;' > <a href='http://nobuna.pp.ua/dload/new_msg_sound-help.txt' target=_blank   ><button title='help' >WTF??</button></a><br>", //background
+		"<input id=dev_mode type=checkbox ",devMode," ><span style='cursor:default;' > Режим розробника (сповільнює роботу)</span><br>", //
+		"<input id=app_start_collapsed type=checkbox ",appStartCollapsed," ><span style='cursor:default;' > Запускати панель у згорнутому вигляді</span><br>", //
+		"<span style='cursor:default;' >Фон панелі (RGBα): </span><input id=app_panel_background value='"+appPanelBackground+"' style='width:100px;' > <a href='http://nobuna.pp.ua/dload/RGBa-help.txt' target=_blank   ><button title='help' >WTF??</button></a><br>", //background
+		"<br><button id='close-options-button' style='width:100%;' > зберегти і закрити </button> "
+	);
+
+
+
+
+
+	document.body.appendChild(optionsPanel);
+
+	$("#close-options-button").click(hideOptions);
+
+	var optionsPanelHeight= parseInt($('#options-panel').css('height'));
+	echo("options height",optionsPanelHeight);
+	optionsPanel.style.top= str( -optionsPanelHeight , "px" ); //!
+	$(optionsPanel).animate({top: 0}, 500); //!
+
+
+}
+
+function hideOptions() {
+
+
+	echo("hide&save options");
+
+	if ( $("#show_images").is(":checked") ) {
+		setCookie("do_not_show_images", "", { path: "/", expires: -1 });
+	} else {
+		setCookie("do_not_show_images", 1, { path: "/", expires: cookiesExpires });
+	}
+
+	setCookieOption("hide_ads");
+	setCookieOption("hide_topics");
+	setCookieOption("mute");
+	setCookieOption("dev_mode");
+	setCookieOption("app_start_collapsed");
+
+	newMsgSound=  $("#new_msg_sound").val();
+	setCookie("new_msg_sound", newMsgSound, { path: "/", expires: cookiesExpires });//background
+	echo("new_msg_sound",newMsgSound);
+
+	appPanelBackground=  $("#app_panel_background").val();
+	setCookie("app_panel_background", appPanelBackground, { path: "/", expires: cookiesExpires });//background
+
+	var optionsPanelHeight= parseInt($('#options-panel').css('height'));
+	echo(optionsPanelHeight);
+	$("#options-panel").animate({top: -optionsPanelHeight}, 500); //!
+
+	setTimeout( function() {
+		$("#options-panel").remove();
+		$("#options-button").show(); //Ξ
+	},500);
+
+}
 
 //-----------------------------------p-a-n-e-l---------------------------------)
 
@@ -251,26 +357,29 @@ function postComment(addressee, msg) {
 	echo("[post private]");//dm
 	$("#app-status").text(" ⌛ "); //⌛
 
+
+
+	var userComment= $("#cm-user-comment").text();
+
 	$.ajax({
-     url: "http://nobuna.pp.ua/AJAX-post-msg.php",
+     url: "https://comment-more.herokuapp.com/AJAX/post-comment",
 		 dataType: "json",
 		 method: "post",
 		 data: {
-			 addressee: addressee,
-			 author: detectUser(),
-			 msg: msg,
-			 key: getCookie("private_more_key")
+			 webPage: url,
+			 author: uName,
+			 userComment: userComment
 		 },
      success: function(res) {
-				echo("Success");//dm
+				echo("post: Success");//dm
 
-				//$("#app-status").text("повідомлення надіслано "); //⌛
 				$("#app-status").text(" "); //⌛
+
 
      },
      error: function() {
 			 echo("Error");//dm
-			 $("#app-status").text(" помилка: [PP] "); //⌛
+			 $("#app-status").text(" error: [pc] "); //⌛
 
 
 			 playSound("http://wav-library.net/effect/windows/xp/windows_xp_-_kriticheskaya_oshibka.mp3");//sm //"http://nobuna.pp.ua/dload/windows_xp_-_kriticheskaya_oshibka.mp3"
@@ -281,14 +390,6 @@ function postComment(addressee, msg) {
 }
 
 
-function setMsg(addressee) {
-	var txt= prompt("Приватне повідомлення "+addressee+": ");
-	if (txt) {
-		postPrivate(addressee, txt);
-	} else {
-		alert("Забули ввести текст, га?")
-	}
-}
 
 
 var mostBanned= [];
@@ -781,7 +882,8 @@ function str() {
 * and print it to the console if cookie "dev_mode" is true
 */
 function echo() { //dm
-	if ( getCookie("dev_mode") ) {
+	//if ( getCookie("dev_mode") )
+	{
 
 		for (var i= 0, txt= ""; i<arguments.length; i++) {
 			var delimiter= (i===arguments.length-1)? "": " | ";

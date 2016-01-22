@@ -17,6 +17,10 @@ app.use(bodyParser.urlencoded({'extended': 'true'})); //без цього не �
 app.use(bodyParser.json());
 
 var fs= require('fs');
+
+
+var MongoClient = require('mongodb').MongoClient;
+var mongoUrl: "mongodb://CommentMore:12345678@waffle.modulusmongo.net:27017/davAd9yn",
 //------------------------------------------------------------------------------
 
 
@@ -35,23 +39,26 @@ app.get('/', function (req, res) { //index
 
 
 
-app.get('/api', function(req,res) { //AJAX get comments
-	var uName = url.parse(req.url, true).query.uName || "Anonymous";
-	console.log("start refresh | uName: ", uName);//x
+app.post('/AJAX/post-comment', function(req,res) { //AJAX post comments
 
 
+	var dateTime= getTime();
 
-	res.json({ uName });//?
+	var db= connect(mongoUrl);
+	db.comments.insert({
+		webPage: req.webPage,
+		author: req.author,
+		userComment: req.userComment,
+		dateTime: dateTime
+	});
+
+	res.json({ dateTime });
 });
 
 
 
 
-app.post('/api', function(req,res) { //AJAX post comment
-	var uName = url.parse(req.url, true).query.uName || "Anonymous";
-	console.log("start refresh | uName: ", uName);//x
-
-
+app.post('/AJAX/get-comments', function(req,res) { //AJAX get comment
 
 
 	res.json({     uName });
