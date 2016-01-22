@@ -1,0 +1,67 @@
+body {
+  /*font-family: courier new;*/
+
+}
+
+.active:hover {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.shell {
+  /*background:azure;*/
+  margin: 5px;
+}
+
+.inventory {
+  margin: 5px;
+}
+
+td#eyeshot {
+  text-align: right;
+
+  vertical-align: middle;
+
+}
+
+td#inventory {
+  text-align: left;
+  
+  vertical-align: middle;
+
+}
+
+
+td {
+  text-align: center;
+  vertical-align: middle;
+  width: 40px;
+  height: 40px;
+  cursor: default;
+  padding: 0px;
+}
+
+#health {
+  background-color: red;
+}
+
+#fullness {
+  background-color: yellow;
+}
+
+#tick {
+  background-color: grey;
+}
+
+span {
+  margin: 5px;
+  padding: 5px;
+}
+
+#self {
+  color: green;
+}
+
+.others {
+  color: red;
+}

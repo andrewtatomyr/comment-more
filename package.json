@@ -1,0 +1,25 @@
+{
+  "name": "Comment More",
+  "version": "0.0.1",
+  "description": "comment on any weeb page",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/andrewtatomyr/comment-more.git"
+  },
+  "author": "andrew tatomyr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andrewtatomyr/comment-more/issues"
+  },
+  "homepage": "https://github.com/andrewtatomyr/comment-more#readme",
+  "dependencies": {
+    "express": "*",
+    "body-parser": "*",
+    "jade": "*",
+    "cookie-parser": "*"
+  }
+}
