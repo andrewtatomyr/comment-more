@@ -46,8 +46,8 @@ app.post('/AJAX/get-comments', function(req,res) { //AJAX get comment
 	//var answer= [];
 	var lastDateTime= parseInt(req.body.lastDateTime);
 	var webPage= req.body.webPage;
-	//if (webPage.indexOf("?")>-1) webPage= webPage.slice(0,webPage.indexOf("?"));
-	//if (webPage.indexOf("#")>-1) webPage= webPage.slice(0,webPage.indexOf("#"));
+	if (webPage.indexOf("?")>-1) webPage= webPage.slice(0,webPage.indexOf("?"));
+	if (webPage.indexOf("#")>-1) webPage= webPage.slice(0,webPage.indexOf("#"));
 	var regWebPage= new RegExp(webPage, "");
 
 	console.log(webPage, lastDateTime);//x
