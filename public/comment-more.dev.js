@@ -19,8 +19,8 @@ var appPanelBackground= getCookie("app_panel_background") || "248 , 199 , 0 , 0.
 var oldWebPage= location.href;
 var lastDateTime= 0;
 var postingInProcess= false;
-var hostDomain= "http://localhost:3000"; //
-//var hostDomain= "https://comment-more.herokuapp.com"; //
+//var hostDomain= "http://localhost:3000"; //
+var hostDomain= "https://comment-more.herokuapp.com"; //
 
 
 
