@@ -48,9 +48,10 @@ app.post('/AJAX/get-comments', function(req,res) { //AJAX get comment
 	var webPage= req.body.webPage;
 	if (webPage.indexOf("?")>-1) webPage= webPage.slice(0,webPage.indexOf("?"));
 	if (webPage.indexOf("#")>-1) webPage= webPage.slice(0,webPage.indexOf("#"));
+	//webPage= webPage.replace(/\?/,"\\?");
 	var regWebPage= new RegExp(webPage, "");
 
-	console.log(webPage, lastDateTime);//x
+	console.log(webPage, regWebPage, lastDateTime);//x
 
 
 	MongoClient.connect(mongoUrl, function(err,db) {
@@ -102,6 +103,7 @@ app.post('/AJAX/post-comment', function(req,res) { //AJAX post comments
 			var collection = db.collection('comments');
 			collection.insert({
 				webPage: req.body.webPage,
+				webPageTitle: req.body.webPageTitle,
 				author: req.body.author,
 				userComment: req.body.userComment,
 				dateTime: dateTime

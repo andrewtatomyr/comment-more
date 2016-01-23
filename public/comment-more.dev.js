@@ -16,9 +16,11 @@ var appHead= 37; //px
 var collapsed= 1;
 var appPanelBackground= getCookie("app_panel_background") || "248 , 199 , 0 , 0.9";
 var uName= "Anonymous";
-var webPage= location.href; // -hash -search
+var oldWebPage= location.href; // -hash -search
 var lastDateTime= 0;
 var postingInProcess= false;
+//var hostDomain= "http://localhost:3000"; //
+var hostDomain= "https://comment-more.herokuapp.com"; //
 
 //--------------------------------o-n---r-e-a-d-y------------------------------(
 
@@ -43,7 +45,7 @@ function commentMore() {
 	setTimeout(function() {
 		setAppPanel();
 
-		getComments(webPage);//x
+		getComments(location.href);//x
 
 
 	}, 2000);
@@ -243,7 +245,7 @@ function showOptions() {
 		"<span style='cursor:default;' >Звуковий файл: </span><input id=new_msg_sound value='"+newMsgSound+"' style='width:100px;' > <a href='http://nobuna.pp.ua/dload/new_msg_sound-help.txt' target=_blank   ><button title='help' >WTF??</button></a><br>", //background
 		"<input id=dev_mode type=checkbox ",devMode," ><span style='cursor:default;' > Режим розробника (сповільнює роботу)</span><br>", //
 		"<input id=app_start_collapsed type=checkbox ",appStartCollapsed," ><span style='cursor:default;' > Запускати панель у згорнутому вигляді</span><br>", //
-		"<span style='cursor:default;' >Фон панелі (RGBα): </span><input id=app_panel_background value='"+appPanelBackground+"' style='width:100px;' > <a href='http://nobuna.pp.ua/dload/RGBa-help.txt' target=_blank   ><button title='help' >WTF??</button></a><br>", //background
+		"<span style='cursor:default;' >Фон панелі (RGBα): </span><input id=app_panel_background value='",appPanelBackground,"' style='width:100px;' > <a href='http://nobuna.pp.ua/dload/RGBa-help.txt' target=_blank   ><button title='help' >WTF??</button></a><br>", //background
 		"<br><button id='close-options-button' style='width:100%;' > зберегти і закрити </button> "
 	);
 
@@ -314,6 +316,8 @@ function getComments(scrollToLastComment) {
 		echo("posting in process"); //delay
 	}
 
+
+
 	echo("[get comments]");//dm
 
 	$("#cm-app-status").text(" ⌛ "); //⌛
@@ -322,14 +326,21 @@ function getComments(scrollToLastComment) {
 	//clearAppPanel(); //f
 
 	var commentArea= document.getElementById("cm-comments-area");//$("div#results-area");//$("#private-msg");
-	//?//commentArea.innerHTML= "";
+	if (location.href!==oldWebPage) { //очистка, якщо змінилася url
+		echo(oldWebPage,location.href);
+
+		oldWebPage= location.href;
+		commentArea.innerHTML= "";
+		lastTimeDate= 0;
+
+	}
 
 	$.ajax({
-     url: "https://comment-more.herokuapp.com/AJAX/get-comments", // "http://localhost:3000/AJAX/get-comments",
+     url: str(hostDomain,"/AJAX/get-comments"), // "https://comment-more.herokuapp.com/AJAX/get-comments", //
 		 dataType: "json",
 		 method: "post",
 		 data: {
-			 webPage: webPage,
+			 webPage: location.href,
 			 lastDateTime: lastDateTime
 		 },
      success: function(res) {
@@ -344,8 +355,9 @@ function getComments(scrollToLastComment) {
 					tab.style.padding= "3px";
 					tab.style.marginBottom= "10px";
 					var current= res.answer[key];
-					tab.innerHTML= "<span style='color:grey;' ><b>"+current.author+"</b>: <br>"+current.userComment+"</span> ";
-					tab.title= str(Date(current.dateTime)," GMT");
+					var commentStyle= (current.webPage===location.href)? "color:black;": "color:grey;";
+					tab.innerHTML= str("<span style='",commentStyle,"' ><b>",current.author,"</b>: <br>",current.userComment,"</span> ");
+					tab.title= str(current.webPageTitle," | ",current.webPage);
 					//$(tsb).css({	"color": "black",	});
 
 					commentArea.appendChild(tab);
@@ -386,11 +398,12 @@ function postComment() {
 		$("#cm-user-comment").val("");
 
 		$.ajax({
-	     url: "https://comment-more.herokuapp.com/AJAX/post-comment", // "http://localhost:3000/AJAX/post-comment", //
+	     url: str(hostDomain,"/AJAX/post-comment"), // "https://comment-more.herokuapp.com/AJAX/post-comment", //
 			 dataType: "json",
 			 method: "post",
 			 data: {
-				 "webPage": webPage,
+				 "webPage": location.href,
+				 "webPageTitle": document.title,
 				 "author": uName,
 				 "userComment": userComment
 			 },
