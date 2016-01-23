@@ -3,14 +3,14 @@
 // @namespace		tatomyr
 // @description	parallel comment on any web page
 // @include     http*
-// @version     0.7
+// @version     0.5
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js
 // @grant       GM_getValue
 // @grant       GM_setValue
 // ==/UserScript==
 
 
-var CMVersion= "0.7";
+var CMVersion= "0.5";
 var cookiesExp= 3600*24*365; //ms
 var resMaxHeight= Math.round( document.documentElement.clientHeight*0.6 )+"px";
 var appHead= 37; //px
@@ -143,7 +143,6 @@ function setAppPanel() {
 
 
 	$("#cm-toggle-button").text("▲");
-	$("#cm-toggle-button").attr({"title":"Toggle comments"}); //☀☂
 	collapsed= 1;
 	$(appPanel).animate({bottom: waterLine}, 500);
 	echo("start collapsed");
@@ -208,13 +207,11 @@ function setEnvironmentDisplay() {
 	echo( "localCommentsOnly", getCookie("cm_localCommentsOnly") );
 	if ( getCookie("cm_localCommentsOnly") ) { //☀☂
 		$("#cm-toggle-env-comm-button").text("☂"); //☀☂
-		$("#cm-toggle-env-comm-button").attr({"title":"Switch to all comments"}); //☀☂
 		$(".cm-external-comments").css({ "display":"none" });
 		$("#cm-comments-count").text(commentsCount.local);
 
 	} else {
 		$("#cm-toggle-env-comm-button").text("☀"); //☀☂
-		$("#cm-toggle-env-comm-button").attr({"title":"Switch to local comments"}); //☀☂
 		$(".cm-external-comments").css({ "display":"block" });
 		$("#cm-comments-count").text(commentsCount.all);
 
@@ -300,12 +297,9 @@ function getComments(scrollToLastComment) {
 
 					var current= res.answer[key];
 
-					var truncatedCurrentWebPage= truncateLeftAll(current.webPage);
-					var truncatedLocationHref= truncateLeftAll(location.href);
-
-					var commentStyle= (truncatedCurrentWebPage===truncatedLocationHref)? "color:black;": "color:grey;";
-					tab.className= (truncatedCurrentWebPage===truncatedLocationHref)? "": "cm-external-comments"; //☀☂
-					if (truncatedCurrentWebPage===truncatedLocationHref) commentsCount.local++;
+					var commentStyle= (current.webPage===location.href)? "color:black;": "color:grey;";
+					tab.className= (current.webPage===location.href)? "": "cm-external-comments"; //☀☂
+					if (current.webPage===location.href) commentsCount.local++;
 					commentsCount.all++;
 
 
@@ -503,17 +497,6 @@ function echo() { //dm
 	}
 }
 
-function leftSlice(url,str) {
-	return (url.indexOf(str)>-1)? url.slice(str.length): url;
-}
 
-function truncateLeftAll(url) {
-	var webPage= url;
-	webPage= leftSlice( webPage , "http://m." );
-	webPage= leftSlice( webPage , "http://www." );
-	webPage= leftSlice( webPage , "https://m." );
-	webPage= leftSlice( webPage , "https://www." );
-	return webPage;
-}
 
 //--------------------------------m-i-c-r-o-l-i-b------------------------------)

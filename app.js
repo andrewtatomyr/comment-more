@@ -80,7 +80,18 @@ app.post('/AJAX/registration', function(req,res) { //AJAX registration
 });
 
 
+function leftSlice(url,str) {
+	return (url.indexOf(str)>-1)? url.slice(str.length): url;
+}
 
+function truncateLeftAll(url) {
+	var webPage= url;
+	webPage= leftSlice( webPage , "http://m." );
+	webPage= leftSlice( webPage , "http://www." );
+	webPage= leftSlice( webPage , "https://m." );
+	webPage= leftSlice( webPage , "https://www." );
+	return webPage;
+}
 
 app.post('/AJAX/get-comments', function(req,res) { //AJAX get comment
 	res.header("Access-Control-Allow-Origin", "*");
@@ -92,6 +103,21 @@ app.post('/AJAX/get-comments', function(req,res) { //AJAX get comment
 	if (webPage.indexOf("?")>-1) webPage= webPage.slice(0,webPage.indexOf("?"));
 	if (webPage.indexOf("#")>-1) webPage= webPage.slice(0,webPage.indexOf("#"));
 	//webPage= webPage.replace(/\?/,"\\?");
+
+	/*
+	if (webPage.indexOf("http://m.")>-1) webPage= webPage.slice(webPage.indexOf("http://m."),0);
+	if (webPage.indexOf("http://www.")>-1) webPage= webPage.slice(webPage.indexOf("http://www."),0);
+	if (webPage.indexOf("https://m.")>-1) webPage= webPage.slice(webPage.indexOf("https://m."),0);
+	if (webPage.indexOf("https://www.")>-1) webPage= webPage.slice(webPage.indexOf("https://www."),0);
+	*/
+	/**
+	webPage= leftSlice( webPage , "http://m." );
+	webPage= leftSlice( webPage , "http://www." );
+	webPage= leftSlice( webPage , "https://m." );
+	webPage= leftSlice( webPage , "https://www." );
+	//*/
+	webPage= truncateLeftAll(webPage);
+
 	var regWebPage= new RegExp(webPage, "");
 
 	console.log(webPage, regWebPage, lastDateTime);//x
