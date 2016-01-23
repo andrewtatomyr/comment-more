@@ -3,14 +3,14 @@
 // @namespace		tatomyr
 // @description	parallel comment on any web page
 // @include     http*
-// @version     0.6
+// @version     0.4
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js
 // @grant       GM_getValue
 // @grant       GM_setValue
 // ==/UserScript==
 
 
-var CMVersion= "0.6";
+var CMVersion= "0.4";
 var cookiesExp= 3600*24*365; //ms
 var resMaxHeight= Math.round( document.documentElement.clientHeight*0.6 )+"px";
 var appHead= 37; //px
@@ -19,9 +19,8 @@ var appPanelBackground= getCookie("app_panel_background") || "248 , 199 , 0 , 0.
 var oldWebPage= location.href;
 var lastDateTime= 0;
 var postingInProcess= false;
-var commentsCount= { "local": 0, "all": 0 };
-var hostDomain= "http://localhost:3000"; //
-//var hostDomain= "https://comment-more.herokuapp.com"; //
+//var hostDomain= "http://localhost:3000"; //
+var hostDomain= "https://comment-more.herokuapp.com"; //
 
 
 
@@ -48,7 +47,7 @@ function commentMore() {
 		setAppPanel();
 
 		setEnvironmentDisplay();//?
-		getComments();//?
+		getComments(location.href);//?
 
 	}, 2000);
 
@@ -82,7 +81,6 @@ function setAppPanel() {
 			"<div style='float:left;' >", //left side
 				"<button id='cm-toggle-button' class='cm-buttons' ></button>",
 				"<button id='cm-toggle-env-comm-button' class='cm-buttons' ></button>",
-				"<span id='cm-comments-count'  ></span>",
 			"</div> ",
 
 			"<span id='cm-app-status' > </span> ",
@@ -207,14 +205,11 @@ function setEnvironmentDisplay() {
 	echo( "localCommentsOnly", getCookie("cm_localCommentsOnly") );
 	if ( getCookie("cm_localCommentsOnly") ) { //☀☂
 		$("#cm-toggle-env-comm-button").text("☂"); //☀☂
-		$(".cm-external-comments").css({ "display":"none" });
-		$("#cm-comments-count").text(commentsCount.local);
+		$(".cm-external-comments").css({"display":"none"});
 
 	} else {
 		$("#cm-toggle-env-comm-button").text("☀"); //☀☂
-		$(".cm-external-comments").css({ "display":"block" });
-		$("#cm-comments-count").text(commentsCount.all);
-
+		$(".cm-external-comments").css({"display":"block"});
 	}
 }
 
@@ -284,7 +279,6 @@ function getComments(scrollToLastComment) {
 		 },
      success: function(res) {
 	     echo("Success get",res.answer);//dm
-
 			 console.log(res);//x
 
 			 $("#cm-app-status").text(" "); //⌛
@@ -299,9 +293,6 @@ function getComments(scrollToLastComment) {
 
 					var commentStyle= (current.webPage===location.href)? "color:black;": "color:grey;";
 					tab.className= (current.webPage===location.href)? "": "cm-external-comments"; //☀☂
-					if (current.webPage===location.href) commentsCount.local++;
-					commentsCount.all++;
-
 
 					var dateTimeStr= new Date(current.dateTime); //
 					dateTimeStr= str( dateTimeStr.getDate(),".",dateTimeStr.getMonth()+1,".",dateTimeStr.getFullYear(), " " ,dateTimeStr.getHours(),":",dateTimeStr.getMinutes() );
@@ -322,6 +313,7 @@ function getComments(scrollToLastComment) {
 			 }
 
 			 if (scrollToLastComment) commentArea.scrollTop = commentArea.scrollHeight;
+
 			 setEnvironmentDisplay();//?
 
 
