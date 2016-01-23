@@ -38,6 +38,49 @@ app.get('/', function (req, res) { //index
 
 
 
+app.post('/AJAX/get-auth', function(req,res) { //AJAX get auth
+	res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+	var dateTime= new Date().getTime();
+
+	MongoClient.connect(mongoUrl, function(err,db) {
+		if (err) throw err;
+
+		var collection= db.collection('users');
+
+		collection.find({ uName: req.body.CMLogin }).toArray(function(err, results) { //{ lastDateTime: {$gt:req.body.lastDateTime} }
+			if(err) throw err;
+
+			db.close();
+
+			if (results.uPassword===req.body.CMPassword) {
+
+				answer= { uName: results.uName };
+			} else {
+				answer= { uName: undefined };
+			}
+
+			res.json( answer );
+		});
+
+	});
+
+
+});
+
+
+app.post('/AJAX/registration', function(req,res) { //AJAX registration
+	//only from original site
+	var dateTime= new Date().getTime();
+
+	//...
+
+
+});
+
+
+
 
 app.post('/AJAX/get-comments', function(req,res) { //AJAX get comment
 	res.header("Access-Control-Allow-Origin", "*");
@@ -55,14 +98,14 @@ app.post('/AJAX/get-comments', function(req,res) { //AJAX get comment
 
 
 	MongoClient.connect(mongoUrl, function(err,db) {
-		if(err) throw err;
+		if (err) throw err;
 
 
 
-		var collection = db.collection('comments');
+		var collection= db.collection('comments');
 
 		collection.find({ dateTime: {$gt:lastDateTime} , webPage: regWebPage }).toArray(function(err, results) { //{ lastDateTime: {$gt:req.body.lastDateTime} }
-			if(err) throw err;
+			if (err) throw err;
 
 			//console.log(results);//x
 			// Let's close the db
@@ -98,9 +141,9 @@ app.post('/AJAX/post-comment', function(req,res) { //AJAX post comments
 	if (req.body.userComment) {
 
 		MongoClient.connect(mongoUrl, function(err,db) {
-			if(err) throw err;
+			if (err) throw err;
 
-			var collection = db.collection('comments');
+			var collection= db.collection('comments');
 			collection.insert({
 				webPage: req.body.webPage,
 				webPageTitle: req.body.webPageTitle,
@@ -108,11 +151,14 @@ app.post('/AJAX/post-comment', function(req,res) { //AJAX post comments
 				userComment: req.body.userComment,
 				dateTime: dateTime
 			}, function(err,docs) {
+				/*
 				collection.find().toArray(function(err, results) {
 	        console.dir(results);
 	        // Let's close the db
 	        db.close();
 	      });
+				*/
+				db.close();
 			});
 
 		});
@@ -125,8 +171,6 @@ app.post('/AJAX/post-comment', function(req,res) { //AJAX post comments
 
 	res.json({ answer });
 });
-
-
 
 
 
