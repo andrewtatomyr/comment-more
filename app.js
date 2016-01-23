@@ -42,41 +42,119 @@ app.post('/AJAX/get-auth', function(req,res) { //AJAX get auth
 	res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
-	var dateTime= new Date().getTime();
+	//var dateTime= new Date().getTime();
 
 	MongoClient.connect(mongoUrl, function(err,db) {
 		if (err) throw err;
 
 		var collection= db.collection('users');
 
-		collection.find({ uName: req.body.CMLogin }).toArray(function(err, results) { //{ lastDateTime: {$gt:req.body.lastDateTime} }
+		collection.find({ CMLogin: req.body.CMLogin }).toArray(function(err, results) { //{ lastDateTime: {$gt:req.body.lastDateTime} }
 			if(err) throw err;
 
 			db.close();
 
-			if (results.uPassword===req.body.CMPassword) {
+			//console.log(results);//x
 
-				answer= { uName: results.uName };
+			if (results[0].CMPassword===req.body.CMPassword) {
+				console.log(results[0].CMLogin,"password ok",results[0].CMPassword,req.body.CMPassword);
+				var answer= results[0].CMLogin ;
+				res.json({ answer });
 			} else {
-				answer= { uName: undefined };
+				console.log("password wrong",results[0].CMPassword,req.body.CMPassword);
+				var answer= "Anonymous" ;
+				res.json({ answer });
 			}
 
-			res.json( answer );
+			//return answer;
 		});
 
 	});
+	//console.log(req.body.CMLogin,req.body.CMPassword,">>>",getInnerAuth(req.body.CMLogin,req.body.CMPassword));//x
+	//res.json( getInnerAuth(req.body.CMLogin,req.body.CMPassword) );
 
 
 });
 
+function getInnerAuth(CMLogin,CMPassword) {
+	var answer= "BeginTest";
+	MongoClient.connect(mongoUrl, function(err,db) {
+		if (err) throw err;
 
-app.post('/AJAX/registration', function(req,res) { //AJAX registration
+		var collection= db.collection('users');
+
+		collection.find({ CMLogin: CMLogin }).toArray(function(err, results) { //{ lastDateTime: {$gt:req.body.lastDateTime} }
+			if(err) throw err;
+
+			db.close();
+
+			//console.log(results);//x
+
+			if (results[0].CMPassword===CMPassword) {
+				console.log(results[0].CMLogin,"password ok",results[0].CMPassword,CMPassword);
+				answer= "Test" //results[0].CMLogin ;
+				res.json({ answer });
+			} else {
+				console.log("password wrong",results[0].CMPassword,CMPassword);
+				answer= "Anonymous" ;
+				res.json({ answer });
+			}
+
+			//return answer;
+		});
+
+	});
+	return answer//x
+}
+
+app.post('/AJAX/sign-up', function(req,res) { //AJAX sign up
 	//only from original site
 	var dateTime= new Date().getTime();
+	console.log(req.body.CMLogin, " | ", dateTime);//x
 
-	//...
+	MongoClient.connect(mongoUrl, function(err,db) {
+		if (err) throw err;
 
 
+
+		var collection= db.collection('users');
+		collection.find({ CMLogin: req.body.CMLogin }).toArray(function(err, results) { //{ lastDateTime: {$gt:req.body.lastDateTime} }
+			if (err) throw err;
+			console.log(results);//x
+
+
+			if (results.length) {
+				db.close();
+
+				var answer= "user already exits";
+				res.json({ answer }); //user exits
+			} else {
+				collection.insert({
+					CMLogin: req.body.CMLogin, //email
+					CMPassword: req.body.CMPassword,
+					CMEmail: req.body.CMEmail,
+					dateTime: dateTime
+				}, function(err,docs) {
+					if (err) throw err;
+
+					db.close();
+
+					var answer= "registration succesfull";
+					res.json({ answer }); //ok
+				});
+			}
+
+
+
+			//db.close();
+
+			//answer= results;
+			//res.json({ answer });
+			//console.log(answer);
+		});
+
+
+	});
 });
 
 
@@ -104,18 +182,6 @@ app.post('/AJAX/get-comments', function(req,res) { //AJAX get comment
 	if (webPage.indexOf("#")>-1) webPage= webPage.slice(0,webPage.indexOf("#"));
 	//webPage= webPage.replace(/\?/,"\\?");
 
-	/*
-	if (webPage.indexOf("http://m.")>-1) webPage= webPage.slice(webPage.indexOf("http://m."),0);
-	if (webPage.indexOf("http://www.")>-1) webPage= webPage.slice(webPage.indexOf("http://www."),0);
-	if (webPage.indexOf("https://m.")>-1) webPage= webPage.slice(webPage.indexOf("https://m."),0);
-	if (webPage.indexOf("https://www.")>-1) webPage= webPage.slice(webPage.indexOf("https://www."),0);
-	*/
-	/**
-	webPage= leftSlice( webPage , "http://m." );
-	webPage= leftSlice( webPage , "http://www." );
-	webPage= leftSlice( webPage , "https://m." );
-	webPage= leftSlice( webPage , "https://www." );
-	//*/
 	webPage= truncateLeftAll(webPage);
 
 	var regWebPage= new RegExp(webPage, "");
@@ -164,38 +230,112 @@ app.post('/AJAX/post-comment', function(req,res) { //AJAX post comments
 	console.log(dateTime,req.body.webPage);//x
 	var answer= "---";
 
-	if (req.body.userComment) {
+	//if (req.body.userComment) {
 
+		//var author= getInnerAuth(req.body.CMLogin,req.body.CMPassword);//?
+		var author= undefined;//?
 		MongoClient.connect(mongoUrl, function(err,db) {
 			if (err) throw err;
+
+			var collection= db.collection('users');
+			collection.find({ CMLogin: req.body.CMLogin }).toArray(function(err, results) { //{ lastDateTime: {$gt:req.body.lastDateTime} }
+				if(err) throw err;
+
+				db.close();
+
+				//console.log(results);//x
+
+				if (results[0].CMPassword===req.body.CMPassword) {
+					console.log(results[0].CMLogin,"password ok",results[0].CMPassword,req.body.CMPassword);
+					author= results[0].CMLogin ;
+					//res.json({ answer });
+				} else {
+					console.log("password wrong",results[0].CMPassword,req.body.CMPassword);
+					author= "Anonymous" ;
+					//res.json({ answer });
+				}
+
+				//return answer;
+
+
+
+				//-----------------------------------
+
+
+
+				MongoClient.connect(mongoUrl, function(err,db) {
+					if (err) throw err;
+					console.log("author #0 >",author);//x
+
+					var collection= db.collection('comments');
+					collection.insert({
+						webPage: req.body.webPage,
+						webPageTitle: req.body.webPageTitle,
+						author: author,
+						userComment: req.body.userComment,
+						dateTime: dateTime
+					}, function(err,docs) {
+						if (err) throw err;
+						/*
+						collection.find().toArray(function(err, results) {
+			        console.dir(results);
+			        // Let's close the db
+			        db.close();
+			      });
+						*/
+						db.close();
+
+						res.json({ answer: "ok" });
+
+					});
+
+				});
+
+				//----------------------------------------
+
+
+
+
+
+			});
+
+		});
+
+		//console.log("author #1 >",author);//x
+		/*
+		MongoClient.connect(mongoUrl, function(err,db) {
+			if (err) throw err;
+			console.log("author #2 >",author);//x
 
 			var collection= db.collection('comments');
 			collection.insert({
 				webPage: req.body.webPage,
 				webPageTitle: req.body.webPageTitle,
-				author: req.body.author,
+				author: author,
 				userComment: req.body.userComment,
 				dateTime: dateTime
 			}, function(err,docs) {
+				if (err) throw err;
 				/*
 				collection.find().toArray(function(err, results) {
 	        console.dir(results);
 	        // Let's close the db
 	        db.close();
 	      });
-				*/
+				*
 				db.close();
+
 			});
 
 		});
-
-		answer= "ok";
-	}
-
-
+		*/
+		//answer= "ok";
+	//}
 
 
-	res.json({ answer });
+
+
+	//res.json({ answer });
 });
 
 

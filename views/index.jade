@@ -3,12 +3,18 @@ html
 		title CommentMore
 		link(href='style.css', rel='stylesheet')
 		script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js')
-		
+		script(src='index.js')
+
 
 
 	body
-		p
-			Install the Monkey ...
-		p
-			Download and install
+		p First Install the Monkey ...
+		p	Then download and install
 			a(href='/comment-more.user.js') CommentMore
+
+		input(id='CMLogin' placeholder='Login (visible name)' )
+		input(id='CMPassword' placeholder='Password' )
+		button Log in
+		span or
+		input(id='CMEmail' type=email placeholder='@' )
+		button(onclick='signUp()') Sign up

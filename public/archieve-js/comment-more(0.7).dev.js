@@ -25,10 +25,9 @@ var hostDomain= "http://localhost:3000"; //
 
 
 
-var CMLogin= "Admin"; //undefined
-var CMPassword= "12345678"; //undefined
-getAuth(/*CMLogin,CMPassword*/); // ||  "Anonymous";
-echo("login getted",CMLogin);
+//var CMLogin= "Admin"; //undefined
+//var CMPassword= "12345678"; //undefined
+var uName= /* getAuth("Admin","12345678") || */ "Anonymous";
 
 //--------------------------------o-n---r-e-a-d-y------------------------------(
 
@@ -40,8 +39,6 @@ echo("login getted",CMLogin);
 
 
 function commentMore() {
-
-	alert(CMLogin);//x
 
 	setInterval(function() {
 		if (!collapsed) getComments(); //в закритому стані не оновлюємо
@@ -100,7 +97,7 @@ function setAppPanel() {
 		"<div id='cm-enhanced-area' style='display:none; ' >",
 			"<div id='cm-comments-area' style='margin-top:10px; margin-bottom:10px; max-height:"+resMaxHeight+"; overflow:auto; ' ></div>", //c
 			"<input id='cm-user-comment' placeholder='Your comment' style='width:100%; margin-bottom:0px; ' > ",
-			"<button id='cm-post-comment' class='cm-buttons' style='width:100%; ' >Post comment as ",CMLogin,"</button> ",
+			"<button id='cm-post-comment' class='cm-buttons' style='width:100%; ' >Post comment as ",uName,"</button> ",
 		"</div>"
 	);
 	document.body.appendChild(appPanel);
@@ -222,7 +219,7 @@ function setEnvironmentDisplay() {
 
 //----------------------------c-o-m-m-e-n-t---m-o-r-e--------------------------(
 
-function getAuth(/*CMLogin,CMPassword*/) {
+function getAuth(CMLogin,CMPassword) {
 	echo("[get auth]");//dm
 
 	$.ajax({
@@ -235,18 +232,14 @@ function getAuth(/*CMLogin,CMPassword*/) {
 		},
 		success: function(res) {
 			echo("get auth: Success",res.answer);//dm
-			console.log(res.answer);//xx
-
-			//return res.answer;
-			CMLogin= res.answer;
 		},
 		error: function() {
 			echo("get auth  Error ",res.answer);//dm
-			CMLogin= undefined;
 			//playSound("http://wav-library.net/effect/windows/xp/windows_xp_-_kriticheskaya_oshibka.mp3");//sm //"http://nobuna.pp.ua/dload/windows_xp_-_kriticheskaya_oshibka.mp3"
 		}
 	});
 
+	return res.answer.uName;
 }
 
 
@@ -359,8 +352,7 @@ function postComment() {
 			 data: {
 				 "webPage": location.href,
 				 "webPageTitle": document.title,
-				 "CMLogin": CMLogin,
-				 "CMPassword": CMPassword,
+				 "author": uName,
 				 "userComment": userComment
 			 },
 	     success: function(res) {
