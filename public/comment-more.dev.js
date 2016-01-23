@@ -3,15 +3,15 @@
 // @namespace		tatomyr
 // @description	parallel comment on any web page
 // @include     http*
-// @version     0.3
+// @version     0.4
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js
 // @grant       GM_getValue
 // @grant       GM_setValue
 // ==/UserScript==
 
 
-var CMVersion= "0.3";
-var cookiesExpires= 3600*24*365;
+var CMVersion= "0.4";
+var cookiesExp= 3600*24*365; //ms
 var resMaxHeight= Math.round( document.documentElement.clientHeight*0.6 )+"px";
 var appHead= 37; //px
 var collapsed= 1;
@@ -46,6 +46,7 @@ function commentMore() {
 	setTimeout(function() {
 		setAppPanel();
 
+		setEnvironmentDisplay();//?
 		getComments(location.href);//?
 
 	}, 2000);
@@ -77,9 +78,13 @@ function setAppPanel() {
 
 	appPanel.innerHTML= str(
 		"<div id='cm-app-head' style='text-align:right;' >",
-			"<div style='float:left;' ><button id='cm-toggle-button' class='cm-buttons' style='' ></button></div> ",
+			"<div style='float:left;' >", //left side
+				"<button id='cm-toggle-button' class='cm-buttons' ></button>",
+				"<button id='cm-toggle-env-comm-button' class='cm-buttons' ></button>",
+			"</div> ",
+
 			"<span id='cm-app-status' > </span> ",
-			"<a href='http://comment-more.herokuapp.com/' title='Project site' target=blank class='cm-link ' ><b>CommentMore</a></b><sup class='cm-grey' >",
+			"<a href='http://comment-more.herokuapp.com/' title='Project site' target=blank class='cm-link ' ><b>CommentMore</a></b><sup id='cm-version' >",
 			CMVersion,
 			" </sup>",
 			"<button id='cm-options-button' title='Options' class='cm-buttons' style='' >≡</button>", //≡
@@ -110,7 +115,7 @@ function setAppPanel() {
 		"text-decoration": "underline",
 		"color": "grey"
 	});
-	$(".cm-grey").css({
+	$("#cm-version").css({
 		"color": "grey"
 	});
 	//*/
@@ -122,6 +127,8 @@ function setAppPanel() {
 	$("#cm-toggle-button").click(toggleAppPanel); //^v
 	//$("#cm-options-button").click(showOptions); //≡
 	$("#cm-post-comment").click(postComment); //pc
+	$("#cm-toggle-env-comm-button").click(toggleEnvComments); //☀☂
+
 
 
 	echo("panel height",$('#cm-app-panel').css('height'));
@@ -138,6 +145,19 @@ function setAppPanel() {
 	$(appPanel).animate({bottom: waterLine}, 500);
 	echo("start collapsed");
 
+
+	/*
+	setEnvironmentDisplay();
+	echo( "localCommentsOnly", getCookie("cm_localCommentsOnly") );
+	if ( getCookie("cm_localCommentsOnly") ) { //☀☂
+		$("#cm-toggle-env-comm-button").text("☂"); //☀☂
+		$(".cm-external-comments").css({"display":"none"});
+
+	} else {
+		$("#cm-toggle-env-comm-button").text("☀"); //☀☂
+		$(".cm-external-comments").css({"display":"block"});
+	}
+	*/
 
 }
 
@@ -163,6 +183,35 @@ function toggleAppPanel() {
 	}
 }
 
+function toggleEnvComments() { //☀☂
+	//echo( "localCommentsOnly", getCookie("cm_localCommentsOnly") );
+
+	if ( getCookie("cm_localCommentsOnly") ) {
+		setCookie( "cm_localCommentsOnly", "", { path: "/", expires: -1 } );
+		//$(".cm-external-comments").css({"display":"block"});
+		//$("#cm-toggle-env-comm-button").text("☀"); //☀☂
+
+	} else {
+		setCookie("cm_localCommentsOnly", 1, { path: "/", expires: cookiesExp });
+		//echo("cookie ->",getCookie("cm_localCommentsOnly"));
+
+		//$(".cm-external-comments").css({"display":"none"});
+		//$("#cm-toggle-env-comm-button").text("☂"); //☀☂
+	}
+	setEnvironmentDisplay();
+}
+
+function setEnvironmentDisplay() {
+	echo( "localCommentsOnly", getCookie("cm_localCommentsOnly") );
+	if ( getCookie("cm_localCommentsOnly") ) { //☀☂
+		$("#cm-toggle-env-comm-button").text("☂"); //☀☂
+		$(".cm-external-comments").css({"display":"none"});
+
+	} else {
+		$("#cm-toggle-env-comm-button").text("☀"); //☀☂
+		$(".cm-external-comments").css({"display":"block"});
+	}
+}
 
 //-----------------------------------p-a-n-e-l---------------------------------)
 
@@ -243,11 +292,14 @@ function getComments(scrollToLastComment) {
 					var current= res.answer[key];
 
 					var commentStyle= (current.webPage===location.href)? "color:black;": "color:grey;";
+					tab.className= (current.webPage===location.href)? "": "cm-external-comments"; //☀☂
+
 					var dateTimeStr= new Date(current.dateTime); //
 					dateTimeStr= str( dateTimeStr.getDate(),".",dateTimeStr.getMonth()+1,".",dateTimeStr.getFullYear(), " " ,dateTimeStr.getHours(),":",dateTimeStr.getMinutes() );
 					echo(dateTimeStr);
 
-					tab.innerHTML= str("<span style='",commentStyle,"' ><b>",current.author,"</b> (",dateTimeStr,"): <br>",current.userComment,"</span> ");
+
+					tab.innerHTML= str("<span style='",commentStyle,"'  ><b>",current.author,"</b> (",dateTimeStr,"): <br>",current.userComment,"</span> ");
 					tab.title= str(current.webPageTitle," | ",current.webPage);
 					//$(tsb).css({	"color": "black",	});
 
@@ -262,6 +314,7 @@ function getComments(scrollToLastComment) {
 
 			 if (scrollToLastComment) commentArea.scrollTop = commentArea.scrollHeight;
 
+			 setEnvironmentDisplay();//?
 
 
      },
