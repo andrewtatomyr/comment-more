@@ -18,6 +18,7 @@ var appPanelBackground= getCookie("app_panel_background") || "248 , 199 , 0 , 0.
 var uName= "Anonymous";
 var webPage= location.href; // -hash -search
 var lastDateTime= 0;
+var postingInProcess= false;
 
 //--------------------------------o-n---r-e-a-d-y------------------------------(
 
@@ -37,12 +38,12 @@ function commentMore() {
 
 		if (!collapsed) getComments();
 
-	}, 5000);
+	}, 30*1000);
 
 	setTimeout(function() {
 		setAppPanel();
 
-		//getComments(webPage);//x
+		getComments(webPage);//x
 
 
 	}, 2000);
@@ -92,12 +93,12 @@ function setAppPanel() {
 
 	appPanel.innerHTML= str(
 		"<div id='cm-app-head' style='text-align:right;' >",
-			"<div style='float:left;' ><button id='cm-toggle-button' ></button></div> ",
+			"<div style='float:left;' ><button id='cm-toggle-button' class='cm-buttons' style='' ></button></div> ",
 			"<span id='cm-app-status' > </span> ",
-			"<a href='http://comment-more.herokuapp.com/' title='Project site' target=blank style='text-decoration:underline; color:grey; ' >CommentMore v.",
+			"<a href='http://comment-more.herokuapp.com/' title='Project site' target=blank class='cm-link ' ><b>CommentMore</a></b><sup class='cm-grey' >",
 			JMVersion,
-			"</a> ",
-			"<button id='cm-options-button' title='Options' > ≡ </button>", //≡
+			" </sup>",
+			"<button id='cm-options-button' title='Options' class='cm-buttons' style='' >≡</button>", //≡
 			" <span id='cm-version-status' style='color:black;'  ></span>",
 		"</div>",
 		//comments:
@@ -116,10 +117,34 @@ function setAppPanel() {
 			//find more:
 			//+"<div><b>Your comment</b></div>"
 			"<input id='cm-user-comment' placeholder='Your comment' style='width:100%; margin-bottom:0px; ' > ",
-			"<button id='cm-post-comment' style='width:100%; ' >Post comment as ",uName,"</button> ",
+			"<button id='cm-post-comment' class='cm-buttons' style='width:100%; ' >Post comment as ",uName,"</button> ",
 		"</div>"
 	);
 	document.body.appendChild(appPanel);
+
+	/* */
+	//var buttonsArr= document.getElementsByClassName("cm-buttons");//
+	//for (var key in buttonsArr) buttonsArr[key].style="";//
+	$(".cm-buttons").css({
+		"font": "12px Franklin Gothic Medium, Arial , Gabriola, Impact",
+		"color": "black",
+		"padding": "1px"
+	});//
+	$("#cm-user-comment").css({
+		"font": "12px Franklin Gothic Medium, Arial , Gabriola, Impact",
+		"color": "black"
+	});
+	$(".cm-link").css({
+		"font": "12px Franklin Gothic Medium, Arial , Gabriola, Impact",
+		"text-decoration": "underline",
+		"color": "grey"
+	});
+	$(".cm-grey").css({
+		"color": "grey"
+	});
+	//*/
+
+
 
 	//getComments(webPage);//?
 
@@ -140,8 +165,7 @@ function setAppPanel() {
 	echo("water line",waterLine);
 
 
-	$("#cm-toggle-button").text("^");
-	echo($("#cm-toggle-button").text());
+	$("#cm-toggle-button").text("▲");
 	collapsed= 1;
 	$(appPanel).animate({bottom: waterLine}, 500);
 	echo("start collapsed");
@@ -161,12 +185,12 @@ function toggleAppPanel() {
 	if (collapsed) {
 		$("div#cm-enhanced-area").css({"display": "block"});
 		//$("#cm-app-panel").animate({bottom: "0px"}, 500);
-		$("#cm-toggle-button").text("v");
+		$("#cm-toggle-button").text("▼");
 		collapsed= false;
 	} else {
 		$("div#cm-enhanced-area").css({"display": "none"});
 		//$("#cm-app-panel").animate({bottom: waterLine}, 500); //!
-		$("#cm-toggle-button").text("^");
+		$("#cm-toggle-button").text("▲");
 		collapsed= 1;
 	}
 }
@@ -191,22 +215,9 @@ function showOptions() {
 	optionsPanel.style.position= "fixed";
 	optionsPanel.style.zIndex= "1010";
 
-	/*
-	optionsPanel.style.top= "100px";
-	optionsPanel.style.left= str(Math.round((document.documentElement.clientWidth-300)/2),"px");
-	*/
+
 	optionsPanel.style.left= "50px";
 
-	/*
-	optionsPanel.padding= "20px";
-	optionsPanel.background= "rgba(100,100,100,0.2)";
-	optionsPanel.position= "fixed";
-	optionsPanel.top= 0;
-	optionsPanel.left= 0;
-	optionsPanel.right= 0;
-	optionsPanel.bottom= 0;
-	optionsPanel.textAlign= "center";
-	*/
 
 	var doNotShowImages= getCookie("do_not_show_images")? "": "checked";
 	//var doNotHideAds= getCookie("do_not_hide_ads")? "": "checked";
@@ -298,7 +309,11 @@ function hideOptions() {
 
 
 
-function getComments() {
+function getComments(scrollToLastComment) {
+	while (postingInProcess) {
+		echo("posting in process"); //delay
+	}
+
 	echo("[get comments]");//dm
 
 	$("#cm-app-status").text(" ⌛ "); //⌛
@@ -310,7 +325,7 @@ function getComments() {
 	//?//commentArea.innerHTML= "";
 
 	$.ajax({
-     url: "http://localhost:3000/AJAX/get-comments",
+     url: "https://comment-more.herokuapp.com/AJAX/get-comments", // "http://localhost:3000/AJAX/get-comments",
 		 dataType: "json",
 		 method: "post",
 		 data: {
@@ -331,22 +346,18 @@ function getComments() {
 					var current= res.answer[key];
 					tab.innerHTML= "<span style='color:grey;' ><b>"+current.author+"</b>: <br>"+current.userComment+"</span> ";
 					tab.title= str(Date(current.dateTime)," GMT");
+					//$(tsb).css({	"color": "black",	});
 
 					commentArea.appendChild(tab);
 
 					if (current.dateTime>lastDateTime) lastDateTime= current.dateTime;
 					echo("last date time",lastDateTime);
 
-					/*
-					var reply= document.createElement('button');
-					reply.title= current.author;
-					reply.innerHTML= "відповісти";
-					reply.onclick= function() { setMsg(this.title); }
-					tab.appendChild(reply);
-					*/
 
+					//if (scrollBottom) commentArea.scrollTop = commentArea.scrollHeight;
 			 }
 
+			 if (scrollToLastComment) commentArea.scrollTop = commentArea.scrollHeight;
 
 
 
@@ -357,10 +368,14 @@ function getComments() {
      }
 	});
 
+	//gettingOrPostingCommentsInProcess= false;
 }
 
 
 function postComment() {
+	//if (gettingOrPostingCommentsInProcess) return "in process";
+	postingInProcess= 1;
+
 	echo("[post comment]");//dm
 	$("#cm-app-status").text(" ⌛ "); //⌛
 
@@ -371,7 +386,7 @@ function postComment() {
 		$("#cm-user-comment").val("");
 
 		$.ajax({
-	     url: "http://localhost:3000/AJAX/post-comment", // "https://comment-more.herokuapp.com/AJAX/post-comment",
+	     url: "https://comment-more.herokuapp.com/AJAX/post-comment", // "http://localhost:3000/AJAX/post-comment", //
 			 dataType: "json",
 			 method: "post",
 			 data: {
@@ -384,6 +399,11 @@ function postComment() {
 
 					$("#cm-app-status").text(" "); //⌛
 
+					/**/
+					getComments(1);
+					//var commentArea= document.getElementById("cm-comments-area");
+					//commentArea.scrollTop = commentArea.scrollHeight;
+					//*/
 
 	     },
 	     error: function() {
@@ -397,7 +417,7 @@ function postComment() {
 		});
 	}
 
-
+	postingInProcess= false;
 }
 
 
@@ -717,13 +737,7 @@ function viewMore() {
 
 }
 
-function scrollToLastComment() {
-	var comments= $("li.comment");
-	var lastComment= comments[comments.length-1];
-	lastComment= $(lastComment).attr("id");
-	echo("last comment id",lastComment);//x
-	if (lastComment) scrollToElement(lastComment); //if the comment exsists
-}
+
 
 
 
