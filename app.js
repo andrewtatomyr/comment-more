@@ -147,16 +147,25 @@ app.post('/AJAX/get-app', function(req,res) { //AJAX get app
 	var answer= "---";
 
 	var fileStamp= fs.readFileSync("public/comment-more.user.js","utf8");
+	var CMVersion= fs.readFileSync("public/CMVersion.txt","utf8").trim();
 
 	fileStamp= fileStamp.replace("var CMLogin=undefined;","var CMLogin=\""+req.body.CMLogin+"\";")
 	.replace("var CMPassword=undefined;","var CMPassword=\""+req.body.CMPassword+"\";")
-	.replace("var hostDomain=\"http://localhost:3000/\";","var hostDomain=\""+req.body.hostDomain+"\";");
+	.replace("var hostDomain=\"http://localhost:3000/\";","var hostDomain=\""+req.body.hostDomain+"\";")
+	.replace("var CMVersion=\"0.0\";","var CMVersion=\""+CMVersion+"\";");
+
+
+	fileStamp= "// ==UserScript==\n// @name CommentMore\n// @namespace tatomyr\n// @description	parallel comment on any web page\n// @include http*\n// @version "+CMVersion+"\n// @require http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js\n// @grant GM_getValue\n// @grant GM_setValue\n// ==/UserScript==\n"
+	+fileStamp;
+
+
+
 
 	var userLink= "comment-more.["+req.body.CMLogin+"]["+req.body.CMPassword+"].user.js";
 	fs.writeFileSync("public/"+userLink,fileStamp,"utf8");
 	console.log("ok - fileStamp | user link: ",userLink);
 
-	res.json({ userLink: userLink, CMVersion: undefined });
+	res.json({ userLink , CMVersion });
 
 
 });

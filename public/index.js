@@ -5,13 +5,15 @@ var cookiesExp= 3600*24*365; //ms
 console.log("index.js starts");//x
 
 (function () {
-	echo(getCookie("CMLogin"));
-	//$("#CMLogin").val("Test");//?????????
-	$("#CMLogin").val( getCookie("CMLogin") );
-	echo(getCookie("CMPassword"));
+	setTimeout(function() {
+		echo(getCookie("CMLogin"));
+		//$("#CMLogin").val("Test");//?????????
+		$("#CMLogin").val( getCookie("CMLogin") );
+		echo(getCookie("CMPassword"));
 
-	$("#CMPassword").val( getCookie("CMPassword")  );
-	$("#CMEmail").val( getCookie("CMEmail")  );
+		$("#CMPassword").val( getCookie("CMPassword")  );
+		$("#CMEmail").val( getCookie("CMEmail")  );
+	},1000);
 })();
 
 
@@ -86,7 +88,7 @@ function getApp() {
 		success: function(res) {
 			echo("get app: Success",res.answer);//dm
 
-			$("#app-link-shell").html(str("<a href='",res.userLink,"' >download</a>"));
+			$("#app-link-shell").html(str("And <a href='",res.userLink,"' >download</a> the CommentMore app v"+res.CMVersion+" "));
 
 
 

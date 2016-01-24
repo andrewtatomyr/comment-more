@@ -1,16 +1,9 @@
-// ==UserScript==
-// @name        CommentMore
-// @namespace		tatomyr
-// @description	parallel comment on any web page
-// @include     http*
-// @version 		0.16
-// @require     http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js
-// @grant       GM_getValue
-// @grant       GM_setValue
-// ==/UserScript==
+var CMVersion="0.0"; //@
+var hostDomain="http://localhost:3000/"; //@
+var CMLogin=undefined; //@
+var CMPassword=undefined; //@
 
 
-var CMVersion= "0.16user";
 var cookiesExp= 3600*24*365; //ms
 var resMaxHeight= Math.round( document.documentElement.clientHeight*0.6 )+"px";
 var appHead= 37; //px
@@ -18,15 +11,10 @@ var collapsed= 1;
 var appPanelBackground= getCookie("app_panel_background") || "248 , 199 , 0 , 0.9";
 var oldWebPage= location.href;
 var lastDateTime= 0;
-var postingInProcess= false;
+var ajaxInProcess= false;
 var commentsCount= { "local": 0, "all": 0 };
-var hostDomain="http://localhost:3000/"; //
-//var hostDomain= "https://comment-more.herokuapp.com/"; //
 
 
-
-var CMLogin=undefined; // "Admin"; // undefined
-var CMPassword=undefined; // "12345678"; // undefined
 //getAuth(/*CMLogin,CMPassword*/); // будемо брати попереднє значення, а під час постингу все само виясниться
 //echo("login getted",CMLogin);
 
@@ -45,7 +33,7 @@ function commentMore() {
 
 	setInterval(function() {
 		if (!collapsed) getComments(); //в закритому стані не оновлюємо
-	}, 15*1000);
+	}, 7*1000);
 
 	setTimeout(function() {
 		setAppPanel();
@@ -222,7 +210,8 @@ function setEnvironmentDisplay() {
 
 //----------------------------c-o-m-m-e-n-t---m-o-r-e--------------------------(
 
-function getAuth(/*CMLogin,CMPassword*/) {
+/*
+function getAuth(/*CMLogin,CMPassword*) {
 	echo("[get auth]");//dm
 
 	$.ajax({
@@ -248,14 +237,12 @@ function getAuth(/*CMLogin,CMPassword*/) {
 	});
 
 }
-
+*/
 
 
 function getComments(scrollToLastComment) {
-	while (postingInProcess) {
-		echo("posting in process"); //delay ?
-	}
-
+	if (ajaxInProcess) { echo( ">>> ajax in process. get omitted"); return undefined; }
+	ajaxInProcess= true;
 
 
 	echo("[get comments]");//dm
@@ -329,10 +316,15 @@ function getComments(scrollToLastComment) {
 			 setEnvironmentDisplay();//?
 
 
+			 ajaxInProcess= false;
+
+
      },
      error: function() {
        echo("Error get comment", res.answer);//dm
 			 $("#cm-app-status").text(" error "); //⌛
+
+			 ajaxInProcess= false;
      }
 	});
 
@@ -340,8 +332,6 @@ function getComments(scrollToLastComment) {
 
 
 function postComment() {
-	//if (gettingOrPostingCommentsInProcess) return "in process";
-	postingInProcess= 1;
 
 	echo("[post comment]");//dm
 	$("#cm-app-status").text(" ⌛ "); //⌛
@@ -368,6 +358,7 @@ function postComment() {
 
 					$("#cm-app-status").text(" "); //⌛
 
+
 					/**/
 					getComments(1);
 					//var commentArea= document.getElementById("cm-comments-area");
@@ -386,7 +377,7 @@ function postComment() {
 		});
 	}
 
-	postingInProcess= false;
+
 }
 
 
