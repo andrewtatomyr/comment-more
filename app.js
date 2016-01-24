@@ -186,6 +186,10 @@ function truncateLeftAll(url) {
 	webPage= leftSlice( webPage , "http://www." );
 	webPage= leftSlice( webPage , "https://m." );
 	webPage= leftSlice( webPage , "https://www." );
+
+
+	webPage= leftSlice( webPage , "https://" );
+	webPage= leftSlice( webPage , "http://" );
 	return webPage;
 }
 

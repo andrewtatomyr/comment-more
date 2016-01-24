@@ -89,7 +89,7 @@ function setAppPanel() {
 			"</div> ",
 
 			"<span id='cm-app-status' > </span> ",
-			"<a href='http://comment-more.herokuapp.com/' title='Project site' target=blank class='cm-link ' ><b>CommentMore</a></b><sup id='cm-version' >",
+			"<a href='",hostDomain,"' title='Project site' target=blank class='cm-link ' ><b>CommentMore</a></b><sup id='cm-version' >",
 			CMVersion,
 			" </sup>",
 			"<button id='cm-options-button' title='Options' class='cm-buttons' style='' >≡</button>", //≡
