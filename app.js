@@ -145,6 +145,7 @@ app.post('/AJAX/get-app', function(req,res) { //AJAX get app
 	console.log(dateTime,req.body.CMLogin,req.body.CMPassword);//x
 	var answer= "---";
 
+	/*
 	var fileStamp= fs.readFileSync("public/comment-more.user.js","utf8");
 	var CMVersion= fs.readFileSync("public/CMVersion.txt","utf8").trim();
 
@@ -158,13 +159,15 @@ app.post('/AJAX/get-app', function(req,res) { //AJAX get app
 	+fileStamp;
 
 
-
+*/
 
 	var userLink= "userscripts/comment-more.["+req.body.CMLogin+"]["+req.body.CMPassword+"].user.js";
+	/*
 	fs.writeFileSync("public/"+userLink,fileStamp,"utf8");
 	console.log("ok - fileStamp | user link: ",userLink);
+	*/
 
-	res.json({ userLink , CMVersion });
+	res.json({ dateTime, userLink});
 
 
 });
