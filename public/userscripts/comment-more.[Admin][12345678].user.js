@@ -1,7 +1,17 @@
-var CMVersion="0.0"; //@
+// ==UserScript==
+// @name CommentMore
+// @namespace none
+// @description	parallel comment on any web page
+// @include http*
+// @version 0.22
+// @require http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js
+// @grant GM_getValue
+// @grant GM_setValue
+// ==/UserScript==
+var CMVersion="0.22"; //@
 var hostDomain="http://localhost:3000/"; //@
-var CMLogin=undefined; //@
-var CMPassword=undefined; //@
+var CMLogin="Admin"; //@
+var CMPassword="12345678"; //@
 
 
 var cookiesExp= 3600*24*365; //ms

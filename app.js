@@ -155,13 +155,13 @@ app.post('/AJAX/get-app', function(req,res) { //AJAX get app
 	.replace("var CMVersion=\"0.0\";","var CMVersion=\""+CMVersion+"\";");
 
 
-	fileStamp= "// ==UserScript==\n// @name CommentMore\n// @namespace tatomyr\n// @description	parallel comment on any web page\n// @include http*\n// @version "+CMVersion+"\n// @require http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js\n// @grant GM_getValue\n// @grant GM_setValue\n// ==/UserScript==\n"
+	fileStamp= "// ==UserScript==\n// @name CommentMore\n// @namespace none\n// @description	parallel comment on any web page\n// @include http*\n// @version "+CMVersion+"\n// @require http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js\n// @grant GM_getValue\n// @grant GM_setValue\n// ==/UserScript==\n"
 	+fileStamp;
 
 
 
 
-	var userLink= "comment-more.["+req.body.CMLogin+"]["+req.body.CMPassword+"].user.js";
+	var userLink= "userscripts/comment-more.["+req.body.CMLogin+"]["+req.body.CMPassword+"].user.js";
 	fs.writeFileSync("public/"+userLink,fileStamp,"utf8");
 	console.log("ok - fileStamp | user link: ",userLink);
 

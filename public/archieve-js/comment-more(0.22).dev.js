@@ -1,3 +1,15 @@
+// ==UserScript==
+// @name        CommentMore
+// @namespace		tatomyr
+// @description	parallel comment on any web page
+// @include     http*
+// @version 		0.0
+// @require     http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js
+// @grant       GM_getValue
+// @grant       GM_setValue
+// ==/UserScript==
+
+
 var CMVersion="0.0"; //@
 var hostDomain="http://localhost:3000/"; //@
 var CMLogin=undefined; //@
