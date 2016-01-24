@@ -140,8 +140,6 @@ app.post('/AJAX/sign-up', function(req,res) { //AJAX sign up
 
 app.post('/AJAX/get-app', function(req,res) { //AJAX get app
 	//original page only
-	//var hostDomain= "http://localhost:3000"; //
-	//var hostDomain= "https://comment-more.herokuapp.com"; //
 
 	var dateTime= new Date().getTime();
 	console.log(dateTime,req.body.CMLogin,req.body.CMPassword);//x
