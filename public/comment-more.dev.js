@@ -3,14 +3,14 @@
 // @namespace		tatomyr
 // @description	parallel comment on any web page
 // @include     http*
-// @version 		0.16
+// @version 		0.0
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js
 // @grant       GM_getValue
 // @grant       GM_setValue
 // ==/UserScript==
 
 
-var CMVersion= "0.16";
+var CMVersion="0.0";
 var cookiesExp= 3600*24*365; //ms
 var resMaxHeight= Math.round( document.documentElement.clientHeight*0.6 )+"px";
 var appHead= 37; //px
@@ -20,13 +20,12 @@ var oldWebPage= location.href;
 var lastDateTime= 0;
 var postingInProcess= false;
 var commentsCount= { "local": 0, "all": 0 };
-var hostDomain="http://localhost:3000/"; //
-//var hostDomain= "https://comment-more.herokuapp.com/"; //
+var hostDomain="http://localhost:3000/"; ////var hostDomain= "https://comment-more.herokuapp.com/"; //
 
 
 
-var CMLogin=undefined; // "Admin"; // undefined
-var CMPassword=undefined; // "12345678"; // undefined
+var CMLogin=undefined;
+var CMPassword=undefined;
 //getAuth(/*CMLogin,CMPassword*/); // будемо брати попереднє значення, а під час постингу все само виясниться
 //echo("login getted",CMLogin);
 

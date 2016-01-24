@@ -1,12 +1,20 @@
-
-//var hostDomain= "http://localhost:3000"; //
-//var hostDomain= "https://comment-more.herokuapp.com"; //
-
-var hostDomain= window.location;
+var hostDomain= ""+window.location;
 echo(hostDomain);
-
+var cookiesExp= 3600*24*365; //ms
 
 console.log("index.js starts");//x
+
+(function () {
+	echo(getCookie("CMLogin"));
+	//$("#CMLogin").val("Test");//?????????
+	$("#CMLogin").val( getCookie("CMLogin") );
+	echo(getCookie("CMPassword"));
+
+	$("#CMPassword").val( getCookie("CMPassword")  );
+	$("#CMEmail").val( getCookie("CMEmail")  );
+})();
+
+
 
 
 function signUp() {
@@ -15,6 +23,8 @@ function signUp() {
 	var CMLogin= $("#CMLogin").val();
 	var CMPassword= $("#CMPassword").val();
 	var CMEmail= $("#CMEmail").val();
+
+
 
 	if (confirm( "Are you sure want to sign up? "+CMLogin+" | "+CMEmail )) {
 		$.ajax({
@@ -32,6 +42,9 @@ function signUp() {
 
 				if (res.answer==="registration succesfull") {
 					alert(res.answer);
+
+					getApp();//?
+
 				} else {
 					alert("User already exists");
 				}
@@ -40,7 +53,7 @@ function signUp() {
 			},
 			error: function() {
 				echo("sign up:  Error ",res.answer);//dm
-				//playSound("http://wav-library.net/effect/windows/xp/windows_xp_-_kriticheskaya_oshibka.mp3");//sm //"http://nobuna.pp.ua/dload/windows_xp_-_kriticheskaya_oshibka.mp3"
+				playSound("http://wav-library.net/effect/windows/xp/windows_xp_-_kriticheskaya_oshibka.mp3");//sm //"http://nobuna.pp.ua/dload/windows_xp_-_kriticheskaya_oshibka.mp3"
 			}
 		});
 	}
@@ -55,12 +68,17 @@ function getApp() {
 	var CMPassword= $("#CMPassword").val();
 	var CMEmail= $("#CMEmail").val();
 
+	setCookie( "CMLogin" , CMLogin , { path: "/", expires: cookiesExp } );
+	setCookie( "CMPassword" , CMPassword , { path: "/", expires: cookiesExp } );
+	setCookie( "CMEmail" , CMEmail , { path: "/", expires: cookiesExp } );
+
+
 	$.ajax({
 		url: str(hostDomain,"AJAX/get-app"), // "https://comment-more.herokuapp.com/AJAX/post-comment", //
 		dataType: "json",
 		method: "post",
 		data: {
-			hostDomain: ""+hostDomain, //https://comment-more.herokuapp.com/", //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			hostDomain: ""+hostDomain,
 			CMLogin: CMLogin,
 			CMPassword: CMPassword,
 			CMEmail: CMEmail
