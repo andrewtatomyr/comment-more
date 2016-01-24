@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        CommentMore
-// @namespace		comment-more
+// @namespace		tatomyr
 // @description	parallel comment on any web page
 // @include     http*
 // @version 		0.0

@@ -20,7 +20,8 @@ var fs= require('fs');
 
 
 var MongoClient = require('mongodb').MongoClient;
-var mongoUrl= "mongodb://CommentMore:12345678@waffle.modulusmongo.net:27017/davAd9yn";
+//var mongoUrl= "mongodb://CommentMore:12345678@waffle.modulusmongo.net:27017/davAd9yn"; //
+var mongoUrl= "mongodb://commentmore:12345678@ds047955.mongolab.com:47955/commentmore"; //
 
 //var methodOverride= require("method-override");
 //------------------------------------------------------------------------------
