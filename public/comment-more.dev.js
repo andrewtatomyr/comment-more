@@ -3,14 +3,14 @@
 // @namespace		tatomyr
 // @description	parallel comment on any web page
 // @include     http*
-// @version 		0.15
+// @version 		0.16
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js
 // @grant       GM_getValue
 // @grant       GM_setValue
 // ==/UserScript==
 
 
-var CMVersion= "0.15";
+var CMVersion= "0.16";
 var cookiesExp= 3600*24*365; //ms
 var resMaxHeight= Math.round( document.documentElement.clientHeight*0.6 )+"px";
 var appHead= 37; //px

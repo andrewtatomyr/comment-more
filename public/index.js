@@ -1,6 +1,7 @@
 
 //var hostDomain= "http://localhost:3000"; //
 //var hostDomain= "https://comment-more.herokuapp.com"; //
+
 var hostDomain= window.location;
 echo(hostDomain);
 
@@ -17,7 +18,7 @@ function signUp() {
 
 	if (confirm( "Are you sure want to sign up? "+CMLogin+" | "+CMEmail )) {
 		$.ajax({
-			url: str(window.location,"AJAX/sign-up"), // "https://comment-more.herokuapp.com/AJAX/post-comment", //
+			url: str(hostDomain,"AJAX/sign-up"), // "https://comment-more.herokuapp.com/AJAX/post-comment", //
 			dataType: "json",
 			method: "post",
 			data: {
@@ -59,7 +60,7 @@ function getApp() {
 		dataType: "json",
 		method: "post",
 		data: {
-			hostDomain: "https://comment-more.herokuapp.com/", //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			hostDomain: ""+hostDomain, //https://comment-more.herokuapp.com/", //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			CMLogin: CMLogin,
 			CMPassword: CMPassword,
 			CMEmail: CMEmail

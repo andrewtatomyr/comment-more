@@ -10,7 +10,7 @@
 // ==/UserScript==
 
 
-var CMVersion= "0.15user";
+var CMVersion= "0.15";
 var cookiesExp= 3600*24*365; //ms
 var resMaxHeight= Math.round( document.documentElement.clientHeight*0.6 )+"px";
 var appHead= 37; //px
@@ -25,8 +25,8 @@ var hostDomain="http://localhost:3000/"; //
 
 
 
-var CMLogin=undefined; // "Admin"; // undefined
-var CMPassword=undefined; // "12345678"; // undefined
+var CMLogin="Admin"; // "Admin"; // undefined
+var CMPassword="12345678"; // "12345678"; // undefined
 //getAuth(/*CMLogin,CMPassword*/); // будемо брати попереднє значення, а під час постингу все само виясниться
 //echo("login getted",CMLogin);
 
