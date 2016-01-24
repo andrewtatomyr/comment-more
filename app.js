@@ -37,7 +37,7 @@ app.get('/', function (req, res) { //index
 });
 
 
-
+/*
 app.post('/AJAX/get-auth', function(req,res) { //AJAX get auth
 	res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -55,16 +55,22 @@ app.post('/AJAX/get-auth', function(req,res) { //AJAX get auth
 			db.close();
 
 			//console.log(results);//x
-
-			if (results[0].CMPassword===req.body.CMPassword) {
-				console.log(results[0].CMLogin,"password ok",results[0].CMPassword,req.body.CMPassword);
-				var answer= results[0].CMLogin ;
-				res.json({ answer });
+			if (results.length) {
+				if ( results[0].CMPassword===req.body.CMPassword ) {
+					console.log(results[0].CMLogin,"password ok",results[0].CMPassword,req.body.CMPassword);
+					var answer= results[0].CMLogin ;
+					res.json({ answer });
+				} else {
+					console.log("password wrong",results[0].CMPassword,req.body.CMPassword);
+					var answer= "Anonymous" ;
+					res.json({ answer });
+				}
 			} else {
-				console.log("password wrong",results[0].CMPassword,req.body.CMPassword);
+				//console.log("password wrong",results[0].CMPassword,req.body.CMPassword);
 				var answer= "Anonymous" ;
 				res.json({ answer });
 			}
+
 
 			//return answer;
 		});
@@ -75,37 +81,8 @@ app.post('/AJAX/get-auth', function(req,res) { //AJAX get auth
 
 
 });
+*/
 
-function getInnerAuth(CMLogin,CMPassword) {
-	var answer= "BeginTest";
-	MongoClient.connect(mongoUrl, function(err,db) {
-		if (err) throw err;
-
-		var collection= db.collection('users');
-
-		collection.find({ CMLogin: CMLogin }).toArray(function(err, results) { //{ lastDateTime: {$gt:req.body.lastDateTime} }
-			if(err) throw err;
-
-			db.close();
-
-			//console.log(results);//x
-
-			if (results[0].CMPassword===CMPassword) {
-				console.log(results[0].CMLogin,"password ok",results[0].CMPassword,CMPassword);
-				answer= "Test" //results[0].CMLogin ;
-				res.json({ answer });
-			} else {
-				console.log("password wrong",results[0].CMPassword,CMPassword);
-				answer= "Anonymous" ;
-				res.json({ answer });
-			}
-
-			//return answer;
-		});
-
-	});
-	return answer//x
-}
 
 app.post('/AJAX/sign-up', function(req,res) { //AJAX sign up
 	//only from original site
@@ -156,6 +133,37 @@ app.post('/AJAX/sign-up', function(req,res) { //AJAX sign up
 
 	});
 });
+
+
+
+
+app.post('/AJAX/get-app', function(req,res) { //AJAX get app
+	//original page only
+	//var hostDomain= "http://localhost:3000"; //
+	//var hostDomain= "https://comment-more.herokuapp.com"; //
+
+	var dateTime= new Date().getTime();
+	console.log(dateTime,req.body.CMLogin,req.body.CMPassword);//x
+	var answer= "---";
+
+	var fileStamp= fs.readFileSync("public/comment-more.user.js","utf8");
+
+	fileStamp= fileStamp.replace("var CMLogin=undefined;","var CMLogin=\""+req.body.CMLogin+"\";")
+	.replace("var CMPassword=undefined;","var CMPassword=\""+req.body.CMPassword+"\";")
+	.replace("var hostDomain=\"http://localhost:3000/\";","var hostDomain=\""+req.body.hostDomain+"\";");
+
+	var userLink= "comment-more.["+req.body.CMLogin+"]["+req.body.CMPassword+"].user.js";
+	fs.writeFileSync("public/"+userLink,fileStamp,"utf8");
+	console.log("ok - fileStamp | user link: ",userLink);
+
+	res.json({ userLink: userLink, CMVersion: undefined });
+
+
+});
+
+
+
+
 
 
 function leftSlice(url,str) {
@@ -230,7 +238,7 @@ app.post('/AJAX/post-comment', function(req,res) { //AJAX post comments
 	console.log(dateTime,req.body.webPage);//x
 	var answer= "---";
 
-	//if (req.body.userComment) {
+	//if (req.body.userComment) { ~
 
 		//var author= getInnerAuth(req.body.CMLogin,req.body.CMPassword);//?
 		var author= undefined;//?
@@ -244,16 +252,21 @@ app.post('/AJAX/post-comment', function(req,res) { //AJAX post comments
 				db.close();
 
 				//console.log(results);//x
-
-				if (results[0].CMPassword===req.body.CMPassword) {
-					console.log(results[0].CMLogin,"password ok",results[0].CMPassword,req.body.CMPassword);
-					author= results[0].CMLogin ;
-					//res.json({ answer });
+				if ( results.length ) {
+					if ( results[0].CMPassword===req.body.CMPassword ) {
+						console.log(results[0].CMLogin,"password ok",results[0].CMPassword,req.body.CMPassword);
+						author= results[0].CMLogin ;
+						//res.json({ answer });
+					} else {
+						console.log("password wrong",results[0].CMPassword,req.body.CMPassword);
+						author= "Anonymous" ;
+						//res.json({ answer });
+					}
 				} else {
-					console.log("password wrong",results[0].CMPassword,req.body.CMPassword);
+					//console.log("password wrong",results[0].CMPassword,req.body.CMPassword);
 					author= "Anonymous" ;
-					//res.json({ answer });
 				}
+
 
 				//return answer;
 
@@ -330,7 +343,7 @@ app.post('/AJAX/post-comment', function(req,res) { //AJAX post comments
 		});
 		*/
 		//answer= "ok";
-	//}
+	//} ~
 
 
 

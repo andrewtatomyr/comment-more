@@ -1,6 +1,9 @@
 
-var hostDomain= "http://localhost:3000"; //
+//var hostDomain= "http://localhost:3000"; //
 //var hostDomain= "https://comment-more.herokuapp.com"; //
+var hostDomain= window.location;
+echo(hostDomain);
+
 
 console.log("index.js starts");//x
 
@@ -14,11 +17,11 @@ function signUp() {
 
 	if (confirm( "Are you sure want to sign up? "+CMLogin+" | "+CMEmail )) {
 		$.ajax({
-			url: str(hostDomain,"/AJAX/sign-up"), // "https://comment-more.herokuapp.com/AJAX/post-comment", //
+			url: str(window.location,"AJAX/sign-up"), // "https://comment-more.herokuapp.com/AJAX/post-comment", //
 			dataType: "json",
 			method: "post",
 			data: {
-				CMLogin: CMLogin, //email
+				CMLogin: CMLogin,
 				CMPassword: CMPassword,
 				CMEmail: CMEmail
 			},
@@ -44,7 +47,39 @@ function signUp() {
 
 }
 
+function getApp() {
+	console.log("log in starts");//x
 
+	var CMLogin= $("#CMLogin").val();
+	var CMPassword= $("#CMPassword").val();
+	var CMEmail= $("#CMEmail").val();
+
+	$.ajax({
+		url: str(hostDomain,"AJAX/get-app"), // "https://comment-more.herokuapp.com/AJAX/post-comment", //
+		dataType: "json",
+		method: "post",
+		data: {
+			hostDomain: "https://comment-more.herokuapp.com/", //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			CMLogin: CMLogin,
+			CMPassword: CMPassword,
+			CMEmail: CMEmail
+		},
+		success: function(res) {
+			echo("get app: Success",res.answer);//dm
+
+			$("#app-link-shell").html(str("<a href='",res.userLink,"' >download</a>"));
+
+
+
+		},
+		error: function() {
+			echo("get app:  Error ");//dm
+			//playSound("http://wav-library.net/effect/windows/xp/windows_xp_-_kriticheskaya_oshibka.mp3");//sm //"http://nobuna.pp.ua/dload/windows_xp_-_kriticheskaya_oshibka.mp3"
+		}
+	});
+
+
+}
 
 //--------------------------------e-x-t-e-r-i-o-r------------------------------(
 

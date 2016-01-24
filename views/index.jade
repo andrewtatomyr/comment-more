@@ -14,7 +14,9 @@ html
 
 		input(id='CMLogin' placeholder='Login (visible name)' )
 		input(id='CMPassword' placeholder='Password' )
-		button Log in
+		button(onclick='getApp()') Log in
 		span or
 		input(id='CMEmail' type=email placeholder='@' )
 		button(onclick='signUp()') Sign up
+		div(id='app-link-shell')
+			
