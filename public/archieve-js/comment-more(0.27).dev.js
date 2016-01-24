@@ -1,17 +1,19 @@
 // ==UserScript==
-// @name CommentMore
-// @namespace none
+// @name        CommentMore
+// @namespace		comment-more
 // @description	parallel comment on any web page
-// @include http*
-// @version 0.22
-// @require http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js
-// @grant GM_getValue
-// @grant GM_setValue
+// @include     http*
+// @version 		0.0
+// @require     http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js
+// @grant       GM_getValue
+// @grant       GM_setValue
 // ==/UserScript==
-var CMVersion="0.22"; //@
+
+
+var CMVersion="0.0"; //@
 var hostDomain="http://localhost:3000/"; //@
-var CMLogin="У мене чудова новина!"; //@
-var CMPassword="12345678"; //@
+var CMLogin=undefined; //@
+var CMPassword=undefined; //@
 
 
 var cookiesExp= 3600*24*365; //ms
@@ -87,7 +89,7 @@ function setAppPanel() {
 			"</div> ",
 
 			"<span id='cm-app-status' > </span> ",
-			"<a href='http://comment-more.herokuapp.com/' title='Project site' target=blank class='cm-link ' ><b>CommentMore</a></b><sup id='cm-version' >",
+			"<a href='",hostDomain,"' title='Project site' target=blank class='cm-link ' ><b>CommentMore</a></b><sup id='cm-version' >",
 			CMVersion,
 			" </sup>",
 			"<button id='cm-options-button' title='Options' class='cm-buttons' style='' >≡</button>", //≡
@@ -269,6 +271,7 @@ function getComments(scrollToLastComment) {
 		commentArea.innerHTML= "";
 		lastDateTime= 0;
 
+		commentsCount= { "local": 0, "all": 0 }; // 0.27
 	}
 
 
@@ -513,6 +516,9 @@ function truncateLeftAll(url) {
 	webPage= leftSlice( webPage , "http://www." );
 	webPage= leftSlice( webPage , "https://m." );
 	webPage= leftSlice( webPage , "https://www." );
+
+	webPage= leftSlice( webPage , "https://" );
+	webPage= leftSlice( webPage , "http://" );
 	return webPage;
 }
 

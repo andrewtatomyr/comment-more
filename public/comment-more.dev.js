@@ -271,6 +271,7 @@ function getComments(scrollToLastComment) {
 		commentArea.innerHTML= "";
 		lastDateTime= 0;
 
+		commentsCount= { "local": 0, "all": 0 }; // 0.27
 	}
 
 
