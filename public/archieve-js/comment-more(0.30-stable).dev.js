@@ -180,7 +180,6 @@ function setAppPanel() {
 	$( "#cm-app-panel" ).draggable({
 	  //addClasses: false,
 	  axis: "x",
-		handle: "div#cm-app-head",
 	  stop: function( event, ui ) {
 			$( "#cm-app-panel" ).css({"top":"auto"});
 			var appPanelRight= $("#cm-app-panel").css("right");

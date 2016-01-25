@@ -142,7 +142,7 @@ app.post('/AJAX/get-app', function(req,res) { //AJAX get app
 	//original page only
 
 	var dateTime= new Date().getTime();
-	console.log(dateTime,req.body.CMLogin,req.body.CMPassword);//x
+	console.log(dateTime,req.body.CMLogin,req.body.CMPassword);//x - hostDomain ДОЦІЛЬНІШЕ ВИЗНАЧАТИ ПРЯМО В app.js
 	var answer= "---";
 
 	var fileStamp= fs.readFileSync("public/comment-more.user.js","utf8");
@@ -154,7 +154,7 @@ app.post('/AJAX/get-app', function(req,res) { //AJAX get app
 	.replace("var CMVersion=\"0.0\";","var CMVersion=\""+CMVersion+"\";");
 
 
-	fileStamp= "// ==UserScript==\n// @name CommentMore\n// @namespace comment-more\n// @description	parallel comment on any web page\n// @include http*\n// @version "+CMVersion+"\n// @require http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js\n// @grant GM_getValue\n// @grant GM_setValue\n// ==/UserScript==\n"
+	fileStamp= "// ==UserScript==\n// @name CommentMore\n// @namespace comment-more\n// @description	parallel comment on any web page\n// @include http*\n// @version "+CMVersion+"\n// @require http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js\n// @require "+req.body.hostDomain+"jquery-ui-1.11.4.custom/jquery-ui.js\n// @grant GM_getValue\n// @grant GM_setValue\n// ==/UserScript==\n"
 	+fileStamp;
 
 

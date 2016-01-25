@@ -87,7 +87,7 @@ function setAppPanel() {
 	appPanel.style.position= "fixed";
 	appPanel.style.zIndex= "1000";
 	//appPanel.style.left= "50px"; //right || cookie
-	appPanel.style.right= getCookie("cm_app-panel-right") || "50px"; //right || cookie
+	appPanel.style.right= "50px"; //right || cookie
 
 	appPanel.style.font= "12px Franklin Gothic Medium, Arial , Gabriola, Impact";
 
@@ -178,12 +178,11 @@ function setAppPanel() {
 
 
 	$( "#cm-app-panel" ).draggable({
-	  //addClasses: false,
+	  addClasses: false,
 	  axis: "x",
-		handle: "div#cm-app-head",
 	  stop: function( event, ui ) {
 			$( "#cm-app-panel" ).css({"top":"auto"});
-			var appPanelRight= $("#cm-app-panel").css("right");
+			var appPanelRight= $("#cm-app-panel").css("left");
 			echo(appPanelRight);
 			setCookie("cm_app-panel-right", appPanelRight, { path: "/", expires: cookiesExp });
 		}
