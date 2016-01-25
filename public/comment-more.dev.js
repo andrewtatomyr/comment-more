@@ -10,6 +10,15 @@
 // ==/UserScript==
 
 
+/*
+violates the security policy on
+http://content-security-policy.com/
+https://www.facebook.com/
+https://twitter.com/
+https://github.com/
+
+*/
+
 var CMVersion="0.0"; //@
 var hostDomain="http://localhost:3000/"; //@
 var CMLogin=undefined; //@
@@ -334,7 +343,7 @@ function getComments(scrollToLastComment) {
 
      },
      error: function() {
-       echo("Error get comment", res.answer);//dm
+       echo("Error get comment");//dm
 			 $("#cm-app-status").text(" error "); //⌛
 
 			 ajaxInProcess= false;
