@@ -1,4 +1,4 @@
-var hostDomain= ""+window.location;
+var hostDomain= window.location.protocol+"//"+window.location.host+"/";
 echo(hostDomain);
 var cookiesExp= 3600*24*365; //ms
 
@@ -88,13 +88,13 @@ function getApp() {
 		dataType: "json",
 		method: "post",
 		data: {
-			hostDomain: ""+hostDomain,
+			hostDomain: hostDomain,
 			CMLogin: CMLogin,
 			CMPassword: CMPassword,
 			CMEmail: CMEmail
 		},
 		success: function(res) {
-			echo("get app: Success",res.answer);//dm
+			echo("get app: Success",res);//dm
 
 			$("#app-link-shell").html(str("And <a href='",res.userLink,"' >download</a> the CommentMore app v"+res.CMVersion+" "));
 

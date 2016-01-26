@@ -140,7 +140,6 @@ app.post('/AJAX/sign-up', function(req,res) { //AJAX sign up
 
 app.post('/AJAX/get-app', function(req,res) { //AJAX get app
 	//original page only
-
 	var dateTime= new Date().getTime();
 	console.log(dateTime,req.body.CMLogin,req.body.CMPassword);//x - hostDomain ДОЦІЛЬНІШЕ ВИЗНАЧАТИ ПРЯМО В app.js
 	var answer= "---";

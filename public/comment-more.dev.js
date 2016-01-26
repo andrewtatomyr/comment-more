@@ -88,7 +88,7 @@ function setAppPanel() {
 	appPanel.style.margin= "0px";
 	appPanel.style.padding= "10px";
 
-	appPanel.style.position= "fixed";
+	appPanel.style.position= "fixed"; //absolute?
 	appPanel.style.zIndex= "1000";
 	//appPanel.style.left= "50px"; //right || cookie
 	appPanel.style.right= getCookie("cm_app-panel-right") || "50px"; //right || cookie
@@ -122,6 +122,11 @@ function setAppPanel() {
 	document.body.appendChild(appPanel);
 
 	/**/
+	
+	//$(".cm-font").
+
+
+
 	$(".cm-buttons").css({
 		"font": "12px Franklin Gothic Medium, Arial , Gabriola, Impact",
 		"color": "black",
