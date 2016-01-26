@@ -5,7 +5,7 @@
 // @include     http*
 // @version 		0.0
 // @require     http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js
-// @require     http://localhost:3000/jquery-ui-1.11.4.custom/jquery-ui.js
+// @require     http://localhost:3000/jquery-ui-1.11.4.custom/jquery-ui.min.js
 // @grant       GM_getValue
 // @grant       GM_setValue
 // ==/UserScript==
