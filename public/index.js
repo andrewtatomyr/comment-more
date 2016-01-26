@@ -96,7 +96,7 @@ function getApp() {
 		success: function(res) {
 			echo("get app: Success",res);//dm
 
-			$("#app-link-shell").html(str("And <a href='",res.userLink,"' >download</a> the CommentMore app v"+res.CMVersion+" "));
+			$("#app-link-shell").html(str("And <a href='",res.userLink,"' >download</a> the CommentMore app v"+res.CMVersion+". Confirm installation "));
 
 
 
