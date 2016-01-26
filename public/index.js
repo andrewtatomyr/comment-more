@@ -13,11 +13,13 @@ console.log("index.js starts");//x
 
 		$("#CMPassword").val( getCookie("CMPassword")  );
 		$("#CMEmail").val( getCookie("CMEmail")  );
+
+
+
+		$( "#DnD" ).draggable({});//x
+
 	},1000);
 
-	$( "#DnD" ).draggable({
-	  
-	});
 
 
 })();
