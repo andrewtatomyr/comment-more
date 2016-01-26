@@ -1,4 +1,4 @@
-var hostDomain= window.location.protocol+"//"+window.location.host+"/";
+var hostDomain= window.location.protocol+"//"+window.location.host+"/"; // ""+window.location;
 echo(hostDomain);
 var cookiesExp= 3600*24*365; //ms
 
