@@ -154,7 +154,7 @@ app.post('/AJAX/get-app', function(req,res) { //AJAX get app
 	.replace("var CMVersion=\"0.0\";","var CMVersion=\""+CMVersion+"\";");
 
 
-	fileStamp= "// ==UserScript==\n// @name CommentMore\n// @namespace comment-more\n// @description	comment on any web page\n// @include http*\n// @version "+CMVersion+"\n// @require http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js\n// @require "+req.body.hostDomain+"jquery-ui-1.11.4.custom/jquery-ui.min.js\n// @grant GM_getValue\n// @grant GM_setValue\n// ==/UserScript==\n"
+	fileStamp= "// ==UserScript==\n// @name CommentMore\n// @namespace comment-more\n// @description	comment on any web page\n// @include http*\n// @version "+CMVersion+"\n// @require "+req.body.hostDomain+"jquery/jquery-1.12.0.min.js\n// @require "+req.body.hostDomain+"jquery-ui-1.11.4.custom/jquery-ui.min.js\n// @grant GM_getValue\n// @grant GM_setValue\n// ==/UserScript==\n"
 	+fileStamp;
 
 
