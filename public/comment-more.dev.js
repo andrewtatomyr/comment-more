@@ -12,11 +12,14 @@
 
 
 /*
-violates the security policy on
-http://content-security-policy.com/
-https://www.facebook.com/
-https://twitter.com/
-https://github.com/
+violates the security policy on:
+	http://content-security-policy.com/
+	https://www.facebook.com/
+	https://twitter.com/
+	https://github.com/
+
+дивна поведінка:
+	https://auto.ria.com/uk/auto_volkswagen_polo_16549856.html#showImages
 
 */
 
