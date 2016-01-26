@@ -92,7 +92,6 @@ function setAppPanel() {
 	appPanel.style.zIndex= "1000";
 	//appPanel.style.left= "50px"; //right || cookie
 	appPanel.style.right= getCookie("cm_app-panel-right") || "50px"; //right || cookie
-	echo("cookie right:",getCookie("cm_app-panel-right"));
 
 	appPanel.style.font= "12px Franklin Gothic Medium, Arial , Gabriola, Impact";
 
@@ -189,7 +188,6 @@ function setAppPanel() {
 	  stop: function( event, ui ) {
 			$( "#cm-app-panel" ).css({"top":"auto"});
 			var appPanelRight= $("#cm-app-panel").css("right");
-			if (appPanelRight==="auto") appPanelRight= str(document.body.clientWidth/*documentElement.clientWidth*/-parseInt($("#cm-app-panel").css("left"))-parseInt($("#cm-app-panel").css("width")),"px"); //Chrome correction
 			echo(appPanelRight);
 			setCookie("cm_app-panel-right", appPanelRight, { path: "/", expires: cookiesExp });
 		}
