@@ -90,7 +90,8 @@ function applyStyle() {
 		"color": "red"
 	});
 	$(".cm-buttons").css({
-		//"background": "transparent",
+		"background": "transparent",
+		"border": "0",
 		"padding": "1px"
 	});
 	$(".cm-link").css({
