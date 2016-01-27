@@ -104,7 +104,7 @@ function applyStyle() {
 		"border-radius": "10px 10px 0px 0px",
 		"background": str("rgba( ",appPanelBackground," )"),
 		"margin": "0px",
-		"padding": "10px 10px 5px 10px", //"10px",
+		"padding": "10px",
 		"position": "fixed", //absolute?
 		"z-index": "1000"
 	});
@@ -186,6 +186,7 @@ function setAppPanel() {
 	$(appPanel).animate({bottom: 0}, 500);
 
 
+
 	appPanel.style.right= getCookie("cm_app-panel-right") || "50px"; //right || cookie
 	echo("cookie right:",getCookie("cm_app-panel-right"));
 	$( "#cm-app-panel" ).draggable({
@@ -197,13 +198,7 @@ function setAppPanel() {
 			var appPanelRight= $("#cm-app-panel").css("right");
 			if (appPanelRight==="auto") appPanelRight= str(document.body.clientWidth/*document.documentElement.clientWidth*/-parseInt($("#cm-app-panel").css("left"))-parseInt($("#cm-app-panel").css("width")),"px"); //Chrome correction
 			echo(appPanelRight);
-			if ( parseInt(document.documentElement.clientWidth)-parseInt(appPanelRight)<0 || parseInt(appPanelRight)+parseInt($("#cm-app-panel").css("width"))<0 ) { //out the borders
-				//nop
-				echo( "panel out the borders","left",parseInt(document.documentElement.clientWidth)-parseInt(appPanelRight),"right",parseInt(appPanelRight)+parseInt($("#cm-app-panel").css("width")) );
-			} else {
-				echo( "panel into the borders","left",parseInt(document.documentElement.clientWidth)-parseInt(appPanelRight),"right",parseInt(appPanelRight)+parseInt($("#cm-app-panel").css("width")) );
-				setCookie("cm_app-panel-right", appPanelRight, { path: "/", expires: cookiesExp });
-			}
+			setCookie("cm_app-panel-right", appPanelRight, { path: "/", expires: cookiesExp });
 		}
 	});
 
