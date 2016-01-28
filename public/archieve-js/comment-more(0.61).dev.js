@@ -247,6 +247,7 @@ function toggleEnvComments() { //☀☂
 	}
 	setEnvironmentDisplay();
 
+	//checkForNewComments(); //this works incorrect on youtube (for example)
 }
 
 function setEnvironmentDisplay() {
@@ -271,7 +272,7 @@ function setEnvironmentDisplay() {
 
 }
 
-/**
+/**/
 function checkForNewComments() { //this works incorrect on youtube (for example). huh, it's incorrect for all sites! because the cookie set on path="/"
 	$("#cm-comments-count").removeClass("cm-red");
 	if ( getCookie("cm_localCommentsOnly") ) { //☀☂
@@ -405,7 +406,7 @@ function getComments(scrollToLastComment) {
 					//if (scrollBottom) commentArea.scrollTop = commentArea.scrollHeight;
 			 }
 
-			 /**
+			 /**/
 			 checkForNewComments(); //this works incorrect on youtube (for example)
 			 /**/
 
