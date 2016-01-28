@@ -31,10 +31,9 @@ var CMPassword=undefined; //@
 
 
 var cookiesExp= 3600*24*365; //ms
-var resMaxHeight= Math.round( document.documentElement.clientHeight*0.6 )+"px";
-//var appHead= 37; //px
+//var resMaxHeight= Math.round( document.documentElement.clientHeight*0.6 )+"px";
+//var appPanelBackground= getCookie("app_panel_background") || "145 , 207 , 142 , 0.9";
 var collapsed= 1;
-var appPanelBackground= getCookie("app_panel_background") || "145 , 207 , 142 , 0.9";
 var oldWebPage= location.href;
 var lastDateTime= 0;
 var ajaxInProcess= false;
@@ -77,6 +76,8 @@ function commentMore() {
 
 //------------------------------s-t-y-l-e---m-o-r-e----------------------------(
 function applyStyle() {
+	var resMaxHeight= Math.round( document.documentElement.clientHeight*0.6 )+"px";
+	var appPanelBackground= getCookie("app_panel_background") || "145 , 207 , 142 , 0.9";
 	$(".cm-font").css({
 		"font": "12px   Arial " //Franklin Gothic Medium, , Gabriola, Impact
 	});
@@ -405,8 +406,9 @@ function getComments(scrollToLastComment) {
 					//if (scrollBottom) commentArea.scrollTop = commentArea.scrollHeight;
 			 }
 
-
+			 /**/
 			 checkForNewComments(); //this works incorrect on youtube (for example)
+			 /**/
 
 			 applyStyle();
 
