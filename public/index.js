@@ -25,7 +25,14 @@ console.log("index.js starts");//x
 })();
 
 
-
+function setLang(hashLang) {
+	if (hashLang) {
+		location.hash= hashLang;
+	}	else {
+		//location.hash= hashLang;
+		//location.href= location.href.split('#')[0];
+	}
+}
 
 function signUp() {
 	console.log("sign up starts");//x
@@ -95,6 +102,7 @@ function getApp() {
 		},
 		success: function(res) {
 			echo("get app: Success",res);//dm
+			console.log(res);//x
 
 			$("#app-link-shell").html(str("And <a href='",res.userLink,"' >download</a> the CommentMore app v"+res.CMVersion+". Confirm installation. Refresh the page "));
 

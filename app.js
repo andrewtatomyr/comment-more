@@ -88,7 +88,8 @@ app.post('/AJAX/get-auth', function(req,res) { //AJAX get auth
 app.post('/AJAX/sign-up', function(req,res) { //AJAX sign up
 	//only from original site
 	var dateTime= new Date().getTime();
-	console.log(req.body.CMLogin, " | ", dateTime);//x
+
+	console.log( req.body.CMLogin, " | ", dateTime );//x
 
 	MongoClient.connect(mongoUrl, function(err,db) {
 		if (err) throw err;
@@ -163,7 +164,7 @@ app.post('/AJAX/get-app', function(req,res) { //AJAX get app
 	fs.writeFileSync("public/"+userLink,fileStamp,"utf8");
 	console.log("ok - fileStamp | user link: ",userLink);
 
-	res.json({ userLink , CMVersion });
+	res.json({ userLink , CMVersion ,  remoteAddress: req.connection.remoteAddress });
 
 
 });
