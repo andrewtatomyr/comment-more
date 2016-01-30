@@ -33,8 +33,6 @@ var CMPassword=undefined; //@
 
 
 var cookiesExp= 3600*24*365; //ms
-//var resMaxHeight= Math.round( document.documentElement.clientHeight*0.6 )+"px";
-//var appPanelBackground= getCookie("app_panel_background") || "145 , 207 , 142 , 0.9";
 var collapsed= 1;
 var oldWebPage= location.href;
 var lastDateTime= 0;
@@ -198,28 +196,11 @@ function setAppPanel() {
 	collapsed= 1;
 	$(appPanel).animate({bottom: 0}, 500);
 
-	/**
-	appPanel.style.right= getCookie("cm_app-panel-right") || "50px"; //right || cookie
-	echo("cookie right:",getCookie("cm_app-panel-right"));
-	$( "#cm-app-panel" ).draggable({
-	  //addClasses: false,
-	  axis: "x",
-		handle: "div#cm-app-head",
-	  stop: function( event, ui ) {
-			$( "#cm-app-panel" ).css({"top":"auto"});
-			var appPanelRight= $("#cm-app-panel").css("right");
-			if (appPanelRight==="auto") appPanelRight= str(document.body.clientWidth-parseInt($("#cm-app-panel").css("left"))-parseInt($("#cm-app-panel").css("width")),"px"); //Chrome correction
-			echo(appPanelRight);
-			if ( parseInt(document.documentElement.clientWidth)-parseInt(appPanelRight)<0 || parseInt(appPanelRight)+parseInt($("#cm-app-panel").css("width"))<0 ) { //out the borders
-				//nop
-				echo( "panel out the borders","left",parseInt(document.documentElement.clientWidth)-parseInt(appPanelRight),"right",parseInt(appPanelRight)+parseInt($("#cm-app-panel").css("width")) );
-			} else {
-				echo( "panel into the borders","left",parseInt(document.documentElement.clientWidth)-parseInt(appPanelRight),"right",parseInt(appPanelRight)+parseInt($("#cm-app-panel").css("width")) );
-				setCookie("cm_app-panel-right", appPanelRight, { path: "/", expires: cookiesExp });
-			}
-		}
-	});
-	/**/
+	appPanelHorizontalPositioning(appPanel);
+
+}
+
+function appPanelHorizontalPositioning(appPanel) {
 	if (getCookie("cm_appPanelLeft")) {
 		echo("start from L");
 		appPanel.style.left= getCookie("cm_appPanelLeft");
@@ -229,10 +210,10 @@ function setAppPanel() {
 	}
 	echo("cookie | right:",getCookie("cm_appPanelRight"),"left:",getCookie("cm_appPanelLeft"));
 	$( "#cm-app-panel" ).draggable({
-	  //addClasses: false,
-	  axis: "x",
+		//addClasses: false,
+		axis: "x",
 		handle: "div#cm-app-head",
-	  stop: function( event, ui ) {
+		stop: function( event, ui ) {
 			$( "#cm-app-panel" ).css({"top":"auto"});
 
 
@@ -256,10 +237,8 @@ function setAppPanel() {
 
 		}
 	});
-	/**/
-
-
 }
+/**/
 
 
 function toggleAppPanel() {
@@ -311,29 +290,6 @@ function setEnvironmentDisplay() {
 	}
 
 }
-
-/**
-function checkForNewComments() { //this works incorrect on youtube (for example). huh, it's incorrect for all sites! because the cookie set on path="/"
-	$("#cm-comments-count").removeClass("cm-red");
-	if ( getCookie("cm_localCommentsOnly") ) { //☀☂
-
-		echo("local comments - ", commentsCount.local, getCookie("cm_localCommentsCount"));
-		if (commentsCount.local-getCookie("cm_localCommentsCount")) {
-			$("#cm-comments-count").addClass("cm-red");
-		}
-		if (!collapsed) setCookie("cm_localCommentsCount", commentsCount.local, { path: "/", expires: cookiesExp });
-	} else {
-
-
-		echo("all comments - ", commentsCount.all, getCookie("cm_allCommentsCount"));
-		if (commentsCount.all-getCookie("cm_allCommentsCount")) {
-			$("#cm-comments-count").addClass("cm-red");
-		}
-		if (!collapsed) setCookie("cm_allCommentsCount", commentsCount.all, { path: "/", expires: cookiesExp });
-	}
-
-}
-/**/
 
 //-----------------------------------p-a-n-e-l---------------------------------)
 
@@ -404,7 +360,7 @@ function getComments(scrollToLastComment) {
 			 lastDateTime: lastDateTime
 		 },
      success: function(res) {
-	     echo("Success get"/*,res.answer*/);//dm
+	     echo("Success get");//dm
 
 			 //console.log(res);//x
 
@@ -418,7 +374,6 @@ function getComments(scrollToLastComment) {
 					var truncatedCurrentWebPage= truncateLeftAll(current.webPage);
 					var truncatedLocationHref= truncateLeftAll(location.href);
 
-					//var commentStyle= (truncatedCurrentWebPage===truncatedLocationHref)? "color:black;": "color:grey;";
 					tab.className= (truncatedCurrentWebPage===truncatedLocationHref)? "cm-comment-tab cm-font cm-black ": "cm-comment-tab cm-font cm-grey cm-external-comments "; //☀☂
 					if (truncatedCurrentWebPage===truncatedLocationHref) commentsCount.local++;
 					commentsCount.all++;
@@ -435,29 +390,19 @@ function getComments(scrollToLastComment) {
 						(truncatedCurrentWebPage===truncatedLocationHref)? " ": str(" <a class='cm-link cm-font cm-grey ' href='",current.webPage,"' >➦</a>") //перехід на сторінку, з якої написано коментар
 					);
 					tab.title= str(current.webPageTitle,"\n",current.webPage);
-					//$(tsb).css({	"color": "black",	});
 
 					commentArea.appendChild(tab);
 
 					if (current.dateTime>lastDateTime) lastDateTime= current.dateTime;
 					//echo("last date time",lastDateTime);
-
-
-					//if (scrollBottom) commentArea.scrollTop = commentArea.scrollHeight;
 			 }
-
-			 /**
-			 checkForNewComments(); //this works incorrect on youtube (for example)
-			 /**/
 
 			 applyStyle();
 
 			 if (scrollToLastComment) commentArea.scrollTop = commentArea.scrollHeight;
 			 setEnvironmentDisplay();//?
 
-
 			 ajaxInProcess= false;
-
 
      },
      error: function() {
@@ -498,18 +443,12 @@ function postComment() {
 
 					$("#cm-app-status").text(" "); //⌛
 
-
-					/**/
 					getComments(1);
-					//var commentArea= document.getElementById("cm-comments-area");
-					//commentArea.scrollTop = commentArea.scrollHeight;
-					//*/
 
 	     },
 	     error: function() {
 				 echo("Error post");//dm
 				 $("#cm-app-status").text(" error "); //⌛
-
 
 				 playSound("http://wav-library.net/effect/windows/xp/windows_xp_-_kriticheskaya_oshibka.mp3");//sm //"http://nobuna.pp.ua/dload/windows_xp_-_kriticheskaya_oshibka.mp3"
 
