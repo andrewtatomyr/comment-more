@@ -22,6 +22,7 @@ violates the security policy on:
 дивна поведінка:
 	~https://auto.ria.com/uk/auto_volkswagen_polo_16549856.html#showImages
 	live.com
+	www.com
 
 */
 
@@ -112,8 +113,8 @@ function applyStyle() {
 		"background": str("rgba( ",appPanelBackground," )"),
 		"margin": "0px",
 		"padding": "10px 10px 5px 10px", //"10px",
-		"position": "fixed"//, //absolute?
-		//"z-index": "1000"
+		"position": "fixed", //absolute?
+		"z-index": "1023"
 	});
 	$("#cm-comments-area").css({ //style='margin-top:10px; margin-bottom:10px; max-height:"+resMaxHeight+"; overflow:auto; '
 		"margin-top": "10px",
