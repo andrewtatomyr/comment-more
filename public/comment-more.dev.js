@@ -198,7 +198,7 @@ function setAppPanel() {
 	collapsed= 1;
 	$(appPanel).animate({bottom: 0}, 500);
 
-
+	/**
 	appPanel.style.right= getCookie("cm_app-panel-right") || "50px"; //right || cookie
 	echo("cookie right:",getCookie("cm_app-panel-right"));
 	$( "#cm-app-panel" ).draggable({
@@ -208,7 +208,7 @@ function setAppPanel() {
 	  stop: function( event, ui ) {
 			$( "#cm-app-panel" ).css({"top":"auto"});
 			var appPanelRight= $("#cm-app-panel").css("right");
-			if (appPanelRight==="auto") appPanelRight= str(document.body.clientWidth/*document.documentElement.clientWidth*/-parseInt($("#cm-app-panel").css("left"))-parseInt($("#cm-app-panel").css("width")),"px"); //Chrome correction
+			if (appPanelRight==="auto") appPanelRight= str(document.body.clientWidth-parseInt($("#cm-app-panel").css("left"))-parseInt($("#cm-app-panel").css("width")),"px"); //Chrome correction
 			echo(appPanelRight);
 			if ( parseInt(document.documentElement.clientWidth)-parseInt(appPanelRight)<0 || parseInt(appPanelRight)+parseInt($("#cm-app-panel").css("width"))<0 ) { //out the borders
 				//nop
@@ -219,6 +219,44 @@ function setAppPanel() {
 			}
 		}
 	});
+	/**/
+	if (getCookie("cm_appPanelLeft")) {
+		echo("start from L");
+		appPanel.style.left= getCookie("cm_appPanelLeft");
+	} else {
+		appPanel.style.right= getCookie("cm_appPanelRight") || "50px";
+		echo("start from R");
+	}
+	echo("cookie | right:",getCookie("cm_appPanelRight"),"left:",getCookie("cm_appPanelLeft"));
+	$( "#cm-app-panel" ).draggable({
+	  //addClasses: false,
+	  axis: "x",
+		handle: "div#cm-app-head",
+	  stop: function( event, ui ) {
+			$( "#cm-app-panel" ).css({"top":"auto"});
+
+
+
+
+			var appPanelRight= Math.max(0,parseInt($("#cm-app-panel").css("right")));
+			if (isNaN(appPanelRight)) appPanelRight= Math.max(0,document.body.clientWidth-parseInt($("#cm-app-panel").css("left"))-parseInt($("#cm-app-panel").css("width"))); //may be in Chrome
+			var appPanelLeft= Math.max(0,parseInt($("#cm-app-panel").css("left")));
+
+			if ( appPanelRight==="auto" || appPanelRight>appPanelLeft ) {
+				setCookie("cm_appPanelRight", "", { path: "/", expires: -1 });
+				setCookie("cm_appPanelLeft", appPanelLeft+"px", { path: "/", expires: cookiesExp });
+				echo("from left",appPanelLeft);
+			} else /*if ( appPanelRight<appPanelLeft )*/ {
+				setCookie("cm_appPanelRight", appPanelRight+"px", { path: "/", expires: cookiesExp });
+				setCookie("cm_appPanelLeft", "", { path: "/", expires: -1 });
+				echo("from right",appPanelRight);
+			}
+
+
+
+		}
+	});
+	/**/
 
 
 }
