@@ -23,6 +23,7 @@ violates the security policy on:
 	~https://auto.ria.com/uk/auto_volkswagen_polo_16549856.html#showImages
 	live.com
 	www.com
+	https://jsfiddle.net/
 
 */
 
@@ -396,15 +397,15 @@ function getComments(scrollToLastComment) {
 					commentArea.appendChild(tab);
 
 					if (current.dateTime>lastDateTime) lastDateTime= current.dateTime;
-					//echo("last date time",lastDateTime);
+					echo("last date time",lastDateTime);//x
 			 }
+			 ajaxInProcess= false;
 
 			 applyStyle();
 
 			 if (scrollToLastComment) commentArea.scrollTop = commentArea.scrollHeight;
 			 setEnvironmentDisplay();//?
 
-			 ajaxInProcess= false;
 
      },
      error: function() {
@@ -420,7 +421,7 @@ function getComments(scrollToLastComment) {
 
 
 
-/* AJAX by GET */
+/* AJAX by GET *
 function getCommentsGET(scrollToLastComment) {
 	if (ajaxInProcess) { echo( ">>> ajax in process. get omitted"); return undefined; }
 	ajaxInProcess= true;
