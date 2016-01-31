@@ -400,6 +400,7 @@ function getComments(scrollToLastComment) {
 					echo("last date time",lastDateTime);//x
 			 }
 			 ajaxInProcess= false;
+			 echo("var ajaxInProcess",ajaxInProcess);//x
 
 			 applyStyle();
 
