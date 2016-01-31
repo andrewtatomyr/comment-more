@@ -57,7 +57,7 @@ function signUp() {
 				echo("sign up: Success",res.answer);//dm
 				//console.log(res.answer);//x!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-				if (res.answer==="registration succesfull") {
+				if (res.answer==="Registration succesfull") {
 					alert(res.answer);
 
 					getApp();//?
