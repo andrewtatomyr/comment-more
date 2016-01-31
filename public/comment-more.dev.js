@@ -369,7 +369,7 @@ function getComments(scrollToLastComment) {
 
 			 $("#cm-app-status").text(" "); //⌛
 
-			 for (key in res.answer) { //res.answer?
+			 for (var key in res.answer) { //res.answer?
 					var tab= document.createElement('div');
 
 					var current= res.answer[key];
